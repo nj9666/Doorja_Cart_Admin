@@ -1,0 +1,63 @@
+<h1 mat-dialog-title>{{data.dialogtext}} Coupon</h1>
+<div mat-dialog-content>
+
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-md-4">
+				<mat-form-field>
+					<mat-label>Coupon Code</mat-label>
+					<input matInput [(ngModel)]="data.obj.CoupCode">
+				</mat-form-field>
+			</div>
+			<div class="col-md-4">
+				<mat-form-field>
+					<mat-label>Name</mat-label>
+					<input matInput [(ngModel)]="data.obj.Name">
+				</mat-form-field>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-4">
+				<mat-form-field>
+					<mat-label>Discount Amount</mat-label>
+					<input matInput [(ngModel)]="data.obj.DiscountAmount">
+				</mat-form-field>
+            </div>
+			<div class="col-md-4">
+				<mat-form-field>
+					<mat-label>Start Date</mat-label>
+					<input matInput [min]="data.minDate" [matDatepicker]="dp3" disabled [(ngModel)]="data.obj.StartDate">
+					<mat-datepicker-toggle matSuffix [for]="dp3"></mat-datepicker-toggle>
+					<mat-datepicker #dp3 disabled="false"></mat-datepicker>
+				</mat-form-field>
+			</div>
+		</div>
+		<div class="row">
+            <div class="col-md-4">
+
+				<label id="Discount">Pick your Discount Type</label>
+				<mat-radio-group aria-labelledby="Discount" class="example-radio-group" style="flex-direction: row;" [(ngModel)]="data.obj.DiscountType">
+					<mat-radio-button class="example-radio-button" [value]="true">
+						Flat
+					</mat-radio-button>
+					<mat-radio-button class="example-radio-button" [value]="false">
+						Percentage
+					</mat-radio-button>
+				</mat-radio-group>
+
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-8">
+				<mat-form-field class="example-full-width">
+					<mat-label>Description</mat-label>
+					<textarea matInput [(ngModel)]="data.obj.Description"></textarea>
+				</mat-form-field>
+			</div>
+		</div>
+	</div>
+</div>
+<div mat-dialog-actions>
+	<button mat-button (click)="onNoClick()">No Thanks</button>
+	<button mat-button [mat-dialog-close]="data" cdkFocusInitial>Ok</button>
+</div>

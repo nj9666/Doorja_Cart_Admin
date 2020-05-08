@@ -1,0 +1,20 @@
+<h1 mat-dialog-title>{{data.dialogtext}} Category</h1>
+<div mat-dialog-content>
+  <mat-form-field>
+    <mat-label>Parant Category</mat-label>
+    <mat-select [(value)]="data.pcatid">
+      <mat-option *ngFor="let cat of data.pcats" [value]="cat.id">
+        {{cat.name}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Category</mat-label>
+    <input matInput [(ngModel)]="data.catname">
+  </mat-form-field>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">No Thanks</button>
+  <button mat-button [mat-dialog-close]="data" cdkFocusInitial>Ok</button>
+</div>
+

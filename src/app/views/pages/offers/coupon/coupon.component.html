@@ -1,0 +1,86 @@
+<kt-portlet>
+	<kt-portlet-header [class]="'kt-portlet__head--lg'">
+		<ng-container ktPortletTitle>
+			<h3 class="kt-portlet__head-title">
+				<span>Product list</span>
+			</h3>
+		</ng-container>
+		<ng-container ktPortletTools>
+			<button (click)="openDialog()" mat-raised-button matTooltip="Create new Deal" color="primary" type="button">
+				<span>New Deal</span>
+			</button>
+			<span></span>
+		</ng-container>
+	</kt-portlet-header>
+	<kt-portlet-body>
+		<div class="row">
+			<div class="col-md-3">
+				<mat-form-field>
+					<mat-label>Search in table</mat-label>
+					<input matInput (keyup)="applyFilter_coupon($event)" placeholder="Ex. ium">
+				</mat-form-field>
+			</div>
+		</div>
+		<div class="example-container ">
+			<div class="example-loading-shade" *ngIf="isLoadingResults">
+				<mat-spinner *ngIf="isLoadingResults"></mat-spinner>
+			</div>
+			<div class="example-table-container">
+				<mat-table #mattbl_coupon [dataSource]="dataSource_coupon" matSort>
+
+					<!-- Column -->
+					<ng-container matColumnDef="CoupCode">
+						<mat-header-cell *matHeaderCellDef> Coupon Code </mat-header-cell>
+						<mat-cell *matCellDef="let element"> {{element.CoupCode}} </mat-cell>
+					</ng-container>
+
+					<!-- Column -->
+					<ng-container matColumnDef="Name">
+						<mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
+						<mat-cell *matCellDef="let element"> {{element.Name}} </mat-cell>
+					</ng-container>
+
+					<!-- Column -->
+					<ng-container matColumnDef="DiscountType">
+						<mat-header-cell *matHeaderCellDef mat-sort-header class="justify-content-center"> Discount Type </mat-header-cell>
+						<mat-cell *matCellDef="let element" class="justify-content-center">
+							<span *ngIf="element.DiscountType" class="kt-badge kt-badge--success kt-badge--inline kt-badge--pill">Flat</span>
+							<span *ngIf="!element.DiscountType" class="kt-badge kt-badge--info kt-badge--inline kt-badge--pill">Percentage</span>
+						</mat-cell>
+					</ng-container>
+
+					<!-- Column -->
+					<ng-container matColumnDef="DiscountAmount">
+						<mat-header-cell *matHeaderCellDef mat-sort-header> Discount Amount </mat-header-cell>
+						<mat-cell *matCellDef="let element"> {{element.DiscountAmount}} </mat-cell>
+					</ng-container>
+
+					<!-- Column -->
+					<ng-container matColumnDef="StartDate">
+						<mat-header-cell *matHeaderCellDef mat-sort-header> Start Date </mat-header-cell>
+						<mat-cell *matCellDef="let element"> {{element.StartDate | date }} </mat-cell>
+					</ng-container>
+
+					<!-- Column -->
+					<ng-container matColumnDef="action">
+						<mat-header-cell *matHeaderCellDef> Action </mat-header-cell>
+						<mat-cell *matCellDef="let element">
+							<button mat-icon-button color="primary" matTooltip="Edit customer" (click)="editelement(element)">
+								<mat-icon>create</mat-icon>
+							</button>&nbsp;
+
+							<button mat-icon-button color="warn" matTooltip="Delete element" type="button" (click)="deleteelement(element)">
+								<mat-icon>delete</mat-icon>
+							</button>&nbsp;
+						</mat-cell>
+					</ng-container>
+
+					<mat-header-row *matHeaderRowDef="displayedColumns;sticky: true"></mat-header-row>
+					<mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+				</mat-table>
+
+				<mat-paginator #mat_pag_coupon [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+			</div>
+		</div>
+	</kt-portlet-body>
+</kt-portlet>

@@ -1,0 +1,45 @@
+<h1 mat-dialog-title>{{data.dialogtext}} Deal</h1>
+<div mat-dialog-content>
+
+	<label id="Discount">Pick your Discount Type</label>
+	<mat-radio-group aria-labelledby="Discount" class="example-radio-group" [(ngModel)]="data.discountType">
+		<mat-radio-button class="example-radio-button" [value]="1">
+			Flat
+		</mat-radio-button>
+		<mat-radio-button class="example-radio-button" [value]="2">
+			Percentage
+		</mat-radio-button>
+	</mat-radio-group>
+
+	<mat-form-field>
+		<mat-label>Discount Amount</mat-label>
+		<input matInput [(ngModel)]="data.DiscountAmount">
+	</mat-form-field>
+
+
+	<mat-form-field>
+		<mat-label>Start Date</mat-label>
+		<input matInput [min]="data.minDate" [matDatepicker]="dp3" disabled [(ngModel)]="data.StartDate">
+		<mat-datepicker-toggle matSuffix [for]="dp3"></mat-datepicker-toggle>
+		<mat-datepicker #dp3 disabled="false"></mat-datepicker>
+	</mat-form-field>
+
+	<mat-list>
+		<div mat-subheader>Folders</div>
+		<mat-list-item *ngFor="let item of data.proList">
+			<mat-icon mat-list-icon color="primary">folder</mat-icon>
+			<div mat-line>{{item.name}}</div>
+			<div mat-line> {{item.vid}}{{item.id}} </div>
+			<button mat-icon-button color="warn">
+				<mat-icon>delete</mat-icon>
+			</button>
+		</mat-list-item>
+
+	</mat-list>
+
+
+</div>
+<div mat-dialog-actions>
+	<button mat-button (click)="onNoClick()">No Thanks</button>
+	<button mat-button [mat-dialog-close]="data" cdkFocusInitial>Ok</button>
+</div>

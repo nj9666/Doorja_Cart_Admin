@@ -1,0 +1,167 @@
+<div class="row">
+	<div class="col-md-6">
+		<kt-portlet>
+			<kt-portlet-header [class]="'kt-portlet__head--lg'">
+				<ng-container ktPortletTitle>
+					<h3 class="kt-portlet__head-title">
+						<span>Deals List</span>
+					</h3>
+				</ng-container>
+				<ng-container ktPortletTools>
+					<button *ngIf="this.selection.selected.length != 0" (click)="openDialog()" mat-raised-button matTooltip="Create new Deal" color="primary" type="button">
+						<span>New Deal</span>
+					</button>
+					<span></span>
+				</ng-container>
+			</kt-portlet-header>
+			<kt-portlet-body>
+				<div class="row">
+					<div class="col-md-3">
+						<mat-form-field>
+							<mat-label>Search in table</mat-label>
+							<input matInput (keyup)="applyFilter_deal($event)" placeholder="Ex. ium">
+						</mat-form-field>
+					</div>
+				</div>
+				<div class="example-container ">
+					<div class="example-loading-shade" *ngIf="isLoadingResults">
+						<mat-spinner *ngIf="isLoadingResults"></mat-spinner>
+					</div>
+					<div class="example-table-container">
+						<mat-table #mattbl_deal [dataSource]="dataSource_deal" multiTemplateDataRows>
+							<ng-container matColumnDef="name">
+								<mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
+								<mat-cell *matCellDef="let element"> {{element.name}} </mat-cell>
+							</ng-container>
+							<ng-container matColumnDef="weight">
+								<mat-header-cell *matHeaderCellDef> weight </mat-header-cell>
+								<mat-cell *matCellDef="let element"> {{element.weight}} </mat-cell>
+							</ng-container>
+							<ng-container matColumnDef="symbol">
+								<mat-header-cell *matHeaderCellDef> symbol </mat-header-cell>
+								<mat-cell *matCellDef="let element"> {{element.symbol}} </mat-cell>
+							</ng-container>
+							<ng-container matColumnDef="position">
+								<mat-header-cell *matHeaderCellDef> position </mat-header-cell>
+								<mat-cell *matCellDef="let element"> {{element.position}} </mat-cell>
+							</ng-container>
+							<ng-container matColumnDef="action">
+								<mat-header-cell *matHeaderCellDef> Action </mat-header-cell>
+								<mat-cell *matCellDef="let element"> 
+                                    <button mat-icon-button color="primary" matTooltip="Edit customer" (click)="editelement(element)">
+                                        <mat-icon>create</mat-icon>
+                                    </button>&nbsp;
+    
+                                    <button mat-icon-button color="warn" matTooltip="Delete element" type="button" (click)="deleteelement(element)">
+                                        <mat-icon>delete</mat-icon>
+                                    </button>&nbsp;    
+                                </mat-cell>
+							</ng-container>
+
+							<!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
+							<ng-container matColumnDef="expandedDetail">
+								<mat-cell *matCellDef="let element" [attr.colspan]="displayedColumns_deal.length">
+									<div class="example-element-detail" [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+
+										<h4 mat-subheader class="py-2">Product list</h4>
+										<div class="row px-1">
+											<div class="col-md-4" *ngFor="let product of element.description">
+												<mat-card class="example-card">
+													<mat-card-header>
+														<mat-card-title>{{product.name}}</mat-card-title>
+														<mat-card-subtitle>$120.00</mat-card-subtitle>
+													</mat-card-header>
+													<mat-card-content>
+														<p>{{product.id | date}}</p>
+													</mat-card-content>
+												</mat-card>
+											</div>
+										</div>
+									</div>
+								</mat-cell>
+							</ng-container>
+
+							<mat-header-row *matHeaderRowDef="displayedColumns_deal"></mat-header-row>
+							<mat-row *matRowDef="let element; columns: displayedColumns_deal;" class="example-element-row" [class.example-expanded-row]="expandedElement === element" (click)="expandedElement = expandedElement === element ? null : element">
+							</mat-row>
+							<mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></mat-row>
+						</mat-table>
+						<mat-paginator #mat_pag_deal [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+					</div>
+				</div>
+			</kt-portlet-body>
+		</kt-portlet>
+	</div>
+
+	<div class="col-md-6">
+		<kt-portlet>
+			<kt-portlet-header [class]="'kt-portlet__head--lg'">
+				<ng-container ktPortletTitle>
+					<h3 class="kt-portlet__head-title">
+						<span>Product list</span>
+					</h3>
+				</ng-container>
+				<ng-container ktPortletTools>
+					<button *ngIf="this.selection.selected.length != 0" (click)="openDialog()" mat-raised-button matTooltip="Create new Deal" color="primary" type="button">
+						<span>New Deal</span>
+					</button>
+					<span></span>
+				</ng-container>
+			</kt-portlet-header>
+			<kt-portlet-body>
+				<div class="row">
+					<div class="col-md-3">
+						<mat-form-field>
+							<mat-label>Search in table</mat-label>
+							<input matInput (keyup)="applyFilter_product($event)" placeholder="Ex. ium">
+						</mat-form-field>
+					</div>
+				</div>
+				<div class="example-container ">
+					<div class="example-loading-shade" *ngIf="isLoadingResults">
+						<mat-spinner *ngIf="isLoadingResults"></mat-spinner>
+					</div>
+					<div class="example-table-container">
+						<mat-table #mattbl_product [dataSource]="dataSource_product" matSort>
+
+							<!-- Checkbox Column -->
+							<ng-container matColumnDef="select">
+								<mat-header-cell *matHeaderCellDef class="mat-column-checkbox">
+									<mat-checkbox (change)="$event ? masterToggle() : null" [checked]="selection.hasValue() && isAllSelected()" [indeterminate]="selection.hasValue() && !isAllSelected()" [aria-label]="checkboxLabel()">
+									</mat-checkbox>
+								</mat-header-cell>
+								<mat-cell *matCellDef="let row" class="mat-column-checkbox">
+									<mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(row) : null" [checked]="selection.isSelected(row)" [aria-label]="checkboxLabel(row)">
+									</mat-checkbox>
+								</mat-cell>
+							</ng-container>
+
+							<!-- Position Column -->
+							<ng-container matColumnDef="id">
+								<mat-header-cell *matHeaderCellDef class="mat-column-id"> Id. </mat-header-cell>
+								<mat-cell *matCellDef="let element" class="mat-column-id"> {{element.id}} </mat-cell>
+							</ng-container>
+
+							<!-- Position Column -->
+							<ng-container matColumnDef="vid">
+								<mat-header-cell *matHeaderCellDef class="mat-column-id"> VId. </mat-header-cell>
+								<mat-cell *matCellDef="let element" class="mat-column-id"> {{element.vid}} </mat-cell>
+							</ng-container>
+
+							<!-- Name Column -->
+							<ng-container matColumnDef="name">
+								<mat-header-cell *matHeaderCellDef mat-sort-header> Name </mat-header-cell>
+								<mat-cell *matCellDef="let element"> {{element.name}} </mat-cell>
+							</ng-container>
+
+							<mat-header-row *matHeaderRowDef="displayedColumns;sticky: true"></mat-header-row>
+							<mat-row *matRowDef="let row; columns: displayedColumns;" (click)="selection.toggle(row)">></mat-row>
+						</mat-table>
+
+						<mat-paginator #mat_pag_product [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+					</div>
+				</div>
+			</kt-portlet-body>
+		</kt-portlet>
+	</div>
+</div>
