@@ -1,0 +1,49 @@
+<h1 mat-dialog-title>Payable Amount is ${{data.obj.PaymantAmount}}</h1>
+<div mat-dialog-content>
+
+    <div class="kt-section">
+        
+        <div class="kt-section__content kt-section__content--solid">
+            <div class="row">
+                <div class="col">
+                    <h4><span class="text-success">{{data.obj.DisplayBusinessName}}'s</span> Bank Details</h4>
+                    <div class="kt-divider">
+                        <span></span>
+                        <span>-</span>
+                        <span></span>
+                    </div>
+                    <h5>Account Holder Name : <span class="text-primary">{{data.obj.VenderFullName}}</span></h5>
+                    <h5>Account Number : <span class="text-primary">{{data.obj.MobileNumber}}</span></h5>
+                    <h5>Bank Name : <span class="text-primary">{{data.obj.DisplayBusinessName}}</span></h5>
+                    <h5>IFSC Code : <span class="text-primary">{{data.obj.PinCode}}</span></h5>
+                </div>
+            </div>
+            <div class="kt-space-10"></div>
+            <div class="kt-divider">
+                <span></span>
+                <span>-</span>
+                <span></span>
+            </div>
+            <div class="kt-space-10"></div>
+            <div class="row">
+                <!-- <div class="col-md-6">
+                    <mat-form-field>
+                        <mat-label>Bank Account Number</mat-label>
+                        <input matInput [(ngModel)]="data.BankAccount" cdkFocusInitial>
+                      </mat-form-field>
+                </div> -->
+                <div class="col-md-12">
+                    <mat-form-field class="example-full-width">
+                        <mat-label>NEFT Id</mat-label>
+                        <input matInput [(ngModel)]="data.NeftId" cdkFocusInitial>
+                      </mat-form-field>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">No Thanks</button>
+  <button mat-button [mat-dialog-close]="data" >Pay</button>
+</div>
+

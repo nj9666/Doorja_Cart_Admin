@@ -1,1 +1,63 @@
-<p>vender-paymant works!</p>
+<kt-portlet>
+	
+	<kt-portlet-body>
+		<div class="row">
+			<div class="col-md-3">
+				<mat-form-field class="example-full-width">
+					<mat-label>Search in table</mat-label>
+					<input matInput (keyup)="applyFilter_vender_paymant($event)" placeholder="Ex. ium">
+				</mat-form-field>
+			</div>
+		</div>
+		<div class="example-container ">
+			<div class="example-loading-shade" *ngIf="isLoadingResults">
+				<mat-spinner *ngIf="isLoadingResults"></mat-spinner>
+			</div>
+			<div class="example-table-container">
+				<mat-table #mattbl_vender_paymant [dataSource]="dataSource_vender_paymant" matSort>
+
+					<!-- Column -->
+					<ng-container matColumnDef="DisplayBusinessName">
+						<mat-header-cell *matHeaderCellDef mat-sort-header> Business Name </mat-header-cell>
+						<mat-cell *matCellDef="let element"> {{element.DisplayBusinessName}} </mat-cell>
+					</ng-container>
+
+					<!-- Column -->
+					<ng-container matColumnDef="VenderFullName">
+						<mat-header-cell *matHeaderCellDef mat-sort-header> Vender Name </mat-header-cell>
+						<mat-cell *matCellDef="let element"> {{element.VenderFullName}} </mat-cell>
+                    </ng-container>
+                    
+					<!-- Column -->
+					<ng-container matColumnDef="BankAccount">
+						<mat-header-cell *matHeaderCellDef > Bank Account </mat-header-cell>
+						<mat-cell *matCellDef="let element"> {{element.BankAccount}} </mat-cell>
+					</ng-container>
+				
+					<!-- Column -->
+					<ng-container matColumnDef="NeftId">
+						<mat-header-cell *matHeaderCellDef > NEFT Id </mat-header-cell>
+						<mat-cell *matCellDef="let element"> {{element.NeftId}} </mat-cell>
+					</ng-container>
+				
+					<!-- Column -->
+					<ng-container matColumnDef="PaymantAmount">
+						<mat-header-cell *matHeaderCellDef mat-sort-header> Paymant Amount </mat-header-cell>
+						<mat-cell *matCellDef="let element"> ${{element.PaymantAmount}} </mat-cell>
+                    </ng-container>
+                    
+					<!-- Column -->
+					<ng-container matColumnDef="PaymantDate">
+						<mat-header-cell *matHeaderCellDef mat-sort-header> Paymant Date </mat-header-cell>
+						<mat-cell *matCellDef="let element"> {{element.PaymantDate | date}} </mat-cell>
+					</ng-container>
+
+					<mat-header-row *matHeaderRowDef="displayedColumns;sticky: true"></mat-header-row>
+					<mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+				</mat-table>
+
+				<mat-paginator #mat_pag_vender_paymant [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+			</div>
+        </div>
+	</kt-portlet-body>
+</kt-portlet>

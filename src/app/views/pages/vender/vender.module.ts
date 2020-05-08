@@ -13,10 +13,10 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
 
 import { VenderPaymantComponent } from './vender-paymant/vender-paymant.component';
-import { VendersComponent } from './venders/venders.component';
+import { VendersComponent,venderPayDialog } from './venders/venders.component';
 
 @NgModule({
-  declarations: [VenderPaymantComponent, VenderComponent, VendersComponent],
+  declarations: [VenderPaymantComponent, VenderComponent, VendersComponent,venderPayDialog],
   imports: [
 	MaterialModule,
 	FormsModule, 
@@ -41,6 +41,7 @@ import { VendersComponent } from './venders/venders.component';
 		},
 		
 	]),
-  ]
+  ], 
+  entryComponents: [venderPayDialog]
 })
 export class VenderModule { }
