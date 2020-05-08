@@ -27,5 +27,4 @@ export class userTbl {
   Email: string;
   ContactNumber: number;
   PinCode: number;
-  
 }
