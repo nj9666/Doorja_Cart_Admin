@@ -1,1 +1,83 @@
-<p>product works!</p>
+<kt-portlet>
+	
+	<kt-portlet-body>
+		<div class="row">
+			<div class="col-md-3">
+				<mat-form-field class="example-full-width">
+					<mat-label>Search in table</mat-label>
+					<input matInput (keyup)="applyFilter_by_product($event)" placeholder="Ex. ium">
+				</mat-form-field>
+			</div>
+		</div>
+		<div class="example-container ">
+			<div class="example-loading-shade" *ngIf="isLoadingResults">
+				<mat-spinner *ngIf="isLoadingResults"></mat-spinner>
+			</div>
+			<div class="example-table-container">
+				<mat-table #mattbl_by_product [dataSource]="dataSource_by_product" matSort>
+
+					<!-- Column -->
+					<ng-container matColumnDef="Name">
+						<mat-header-cell *matHeaderCellDef mat-sort-header> Product Name </mat-header-cell>
+						<mat-cell *matCellDef="let element"> {{element.Name}} </mat-cell>
+                    </ng-container>
+                    
+					<!-- Column -->
+					<ng-container matColumnDef="Sku">
+						<mat-header-cell *matHeaderCellDef mat-sort-header> Product Sku </mat-header-cell>
+						<mat-cell *matCellDef="let element"> {{element.Sku}} </mat-cell>
+					</ng-container>
+
+					<!-- Column -->
+					<ng-container matColumnDef="VenderFullName">
+						<mat-header-cell *matHeaderCellDef mat-sort-header> Vender Name </mat-header-cell>
+						<mat-cell *matCellDef="let element"> {{element.VenderFullName}} </mat-cell>
+                    </ng-container>
+                    
+					<!-- Column -->
+					<ng-container matColumnDef="Price">
+						<mat-header-cell *matHeaderCellDef > Price </mat-header-cell>
+						<mat-cell *matCellDef="let element"> ${{element.Price}} </mat-cell>
+					</ng-container>
+				
+					<!-- Column -->
+					<ng-container matColumnDef="Color">
+						<mat-header-cell *matHeaderCellDef mat-sort-header> Colour </mat-header-cell>
+						<mat-cell *matCellDef="let element"> {{element.Color}} </mat-cell>
+					</ng-container>
+				
+					<!-- Column -->
+					<ng-container matColumnDef="Size">
+						<mat-header-cell *matHeaderCellDef mat-sort-header> Size </mat-header-cell>
+						<mat-cell *matCellDef="let element"> {{element.Size}} </mat-cell>
+                    </ng-container>
+
+					<!-- Column -->
+					<ng-container matColumnDef="TotalCount">
+						<mat-header-cell *matHeaderCellDef mat-sort-header> Total Count </mat-header-cell>
+						<mat-cell *matCellDef="let element">
+                            <span *ngIf="element.TotalCount > 2000" class="kt-badge kt-badge--success kt-badge--inline kt-badge--pill kt-badge--rounded">{{element.TotalCount}}</span>
+                            <span *ngIf="element.TotalCount < 1999 && element.TotalCount > 1500" class="kt-badge kt-badge--warning kt-badge--inline kt-badge--pill kt-badge--rounded">{{element.TotalCount}}</span>
+                            <span *ngIf="element.TotalCount < 1499 && element.TotalCount > 1000" class="kt-badge kt-badge--danger kt-badge--inline kt-badge--pill kt-badge--rounded">{{element.TotalCount}}</span>
+                            <span *ngIf="element.TotalCount < 999 && element.TotalCount > 500" class="kt-badge kt-badge--info kt-badge--inline kt-badge--pill kt-badge--rounded">{{element.TotalCount}}</span>
+                            <span *ngIf="element.TotalCount < 499" class="kt-badge kt-badge--light kt-badge--inline kt-badge--pill kt-badge--rounded">{{element.TotalCount}}</span>
+                             
+                        </mat-cell>
+                    </ng-container>
+
+					<!-- Column -->
+					<ng-container matColumnDef="TotalAmoun">
+						<mat-header-cell *matHeaderCellDef mat-sort-header> Total Amoun </mat-header-cell>
+						<mat-cell *matCellDef="let element"> ${{element.TotalAmoun}} </mat-cell>
+                    </ng-container>
+                    
+					
+					<mat-header-row *matHeaderRowDef="displayedColumns;sticky: true"></mat-header-row>
+					<mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+				</mat-table>
+
+				<mat-paginator #mat_pag_by_product [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+			</div>
+        </div>
+	</kt-portlet-body>
+</kt-portlet>

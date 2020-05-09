@@ -11,11 +11,17 @@ import { OrderComponent } from './order.component';
 import { ProductComponent } from './product/product.component';
 import { VenderComponent } from './vender/vender.component';
 
+import { MaterialModule } from '../../../../material-module';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+
 
 
 @NgModule({
   declarations: [OrderComponent, ProductComponent, VenderComponent],
   imports: [
+	MaterialModule,
+	FormsModule, 
+	ReactiveFormsModule,
     CommonModule,
 		PartialsModule,
 		CoreModule,
