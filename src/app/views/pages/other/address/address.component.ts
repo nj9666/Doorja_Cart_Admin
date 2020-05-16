@@ -2,6 +2,8 @@ import { Component, OnInit,  ViewChild, Inject} from '@angular/core';
 import { MatSort,MatPaginator,MatTableDataSource} from '@angular/material';
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 
+import { SystemService } from '../../../../Shared/SystemService';
+
 @Component({
   selector: 'kt-address',
   templateUrl: './address.component.html',
@@ -9,7 +11,6 @@ import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog
 })
 export class AddressComponent implements OnInit {
   displayedColumns: string[] = ['name','actions'];
-  
   Citys = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA_Citys);
   States = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA_States);
   Countrys = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA_Countrys);
@@ -21,7 +22,7 @@ export class AddressComponent implements OnInit {
   @ViewChild('mat_pag_Countrys', {read: MatPaginator, static: true}) paginator_Countrys: MatPaginator;
   @ViewChild('mattbl_Countrys', {read: MatSort, static: true}) sort_Countrys: MatSort;
 
-  constructor(public dialog: MatDialog) { }
+  constructor(public dialog: MatDialog, public service: SystemService) { }
 
   applyFilter_Citys(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
@@ -36,12 +37,9 @@ export class AddressComponent implements OnInit {
     this.Countrys.filter = filterValue.trim().toLowerCase();
   }
   ngOnInit() {
-    this.Citys.paginator = this.paginator_Citys;
-    this.Citys.sort = this.sort_Citys;
-    this.States.paginator = this.paginator_States;
-    this.States.sort = this.sort_States;
-    this.Countrys.paginator = this.paginator_Countrys;
-    this.Countrys.sort = this.sort_Countrys;
+    this.loadCitys();
+    this.loadStates();
+    this.loadCountrys();
   }
   openDialog(f:number): void {
     if (f == 1) {
@@ -79,35 +77,179 @@ export class AddressComponent implements OnInit {
     if (f == 1) {
       const dialogRef = this.dialog.open(CitysDialog, {
         width: '250px',
-        data: {dialogtext: "Edit this", catname: el.name}
+        data: {dialogtext: "Edit this", catname: el.name, id:el.id}
       });
 
       dialogRef.afterClosed().subscribe(result => {
         console.log('The dialog was closed');
         console.log(result);
+        this.EditCity(result.id,result.catname);
+        // if(this.EditCity(result.id,result.catname)){
+        //   el.name = result.catname;
+        // }
+
       });
     }else if(f == 2){
       const dialogRef = this.dialog.open(StatesDialog, {
         width: '250px',
-        data: {dialogtext: "Edit this", catname: el.name}
+        data: {dialogtext: "Edit this", catname: el.name, id:el.id}
       });
 
       dialogRef.afterClosed().subscribe(result => {
         console.log('The dialog was closed');
         console.log(result);
+        this.EditState(result.id,result.catname);
       });
     }else{
       const dialogRef = this.dialog.open(CountrysDialog, {
         width: '250px',
-        data: {dialogtext: "Edit this", catname: el.name}
+        data: {dialogtext: "Edit this", catname: el.name, id:el.id}
       });
 
       dialogRef.afterClosed().subscribe(result => {
         console.log('The dialog was closed');
         console.log(result);
+        this.EditCountry(result.id,result.catname);
       });
     }
   }
+
+  loadCitys(){
+    this.service.Data.ExecuteAPI_Get<any>("City/GetAll").then((data:any) =>
+		{
+      this.Citys = new MatTableDataSource<any>([]);
+      if (data.success)
+      {
+        ELEMENT_DATA_Citys.length = 0;
+        data.data.forEach(element => { ELEMENT_DATA_Citys.push(element); });
+        this.Citys = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA_Citys);
+        this.Citys.paginator = this.paginator_Citys;
+        this.Citys.sort = this.sort_Citys;
+      }
+		});
+  }
+  loadStates(){
+    this.service.Data.ExecuteAPI_Get<any>("State/GetAll").then((data:any) =>
+		{
+      this.States = new MatTableDataSource<any>([]);
+      if (data.success)
+      {
+        ELEMENT_DATA_States.length = 0;
+        data.data.forEach(element => { ELEMENT_DATA_States.push(element); });
+        this.States = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA_States);
+        this.States.paginator = this.paginator_States;
+        this.States.sort = this.sort_States;
+      }
+		});
+  }
+  loadCountrys(){
+    this.service.Data.ExecuteAPI_Get<any>("Country/GetAll").then((data:any) =>
+		{
+      this.Countrys = new MatTableDataSource<any>([]);
+      if (data.success)
+      {
+        ELEMENT_DATA_Countrys.length = 0;
+        data.data.forEach(element => { ELEMENT_DATA_Countrys.push(element); });
+        this.Countrys = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA_Countrys);
+        this.Countrys.paginator = this.paginator_Countrys;
+        this.Countrys.sort = this.sort_Countrys;
+      }
+		});
+  }
+  EditCity(_id:number,_name:string){
+      let city = {
+      name : _name,
+    }; 
+    this.service.Data.ExecuteAPI<any>("City/Edit/"+_id,city).then((data:any) =>
+		{
+      if (data.success)
+      {
+       console.log(data);
+       ELEMENT_DATA_Citys.find(x => x.id === _id).name = _name;
+       this.Citys = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA_Citys);
+      }
+      
+    });
+    
+    
+  }
+  EditState(_id:number,_name:string){
+      let State = {
+      name : _name,
+    }; 
+    this.service.Data.ExecuteAPI<any>("State/Edit/"+_id,State).then((data:any) =>
+		{
+      if (data.success)
+      {
+       console.log(data);
+       ELEMENT_DATA_States.find(x => x.id === _id).name = _name;
+       this.States = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA_States);
+      }
+      
+    });
+    
+    
+  }
+  EditCountry(_id:number,_name:string){
+      let Country = {
+      name : _name,
+    }; 
+    this.service.Data.ExecuteAPI<any>("Country/Edit/"+_id,Country).then((data:any) =>
+		{
+      if (data.success)
+      {
+       console.log(data);
+       ELEMENT_DATA_Countrys.find(x => x.id === _id).name = _name;
+       this.Countrys = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA_Countrys);
+      }
+      
+    });
+    
+    
+  }
+  RemoveCity(el){
+    this.service.Data.ExecuteAPI<any>("City/Remove/"+el.id,null).then((data:any) =>
+		{
+      if (data.success)
+      {
+       console.log(data);
+       const index: number = ELEMENT_DATA_Citys.indexOf(ELEMENT_DATA_Citys.find(x => x.id === el.id));
+      if (index !== -1) {
+       ELEMENT_DATA_Citys.splice(index, 1);
+      } 
+      this.Citys = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA_Citys);
+      }
+    });
+  }
+  RemoveState(el){
+    this.service.Data.ExecuteAPI<any>("State/Remove/"+el.id,null).then((data:any) =>
+		{
+      if (data.success)
+      {
+       console.log(data);
+       const index: number = ELEMENT_DATA_States.indexOf(ELEMENT_DATA_States.find(x => x.id === el.id));
+      if (index !== -1) {
+       ELEMENT_DATA_States.splice(index, 1);
+      } 
+      this.States = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA_States);
+      }
+    });
+  }
+  RemoveCountry(el){
+    this.service.Data.ExecuteAPI<any>("Country/Remove/"+el.id,null).then((data:any) =>
+		{
+      if (data.success)
+      {
+       console.log(data);
+       const index: number = ELEMENT_DATA_Countrys.indexOf(ELEMENT_DATA_Countrys.find(x => x.id === el.id));
+      if (index !== -1) {
+       ELEMENT_DATA_Countrys.splice(index, 1);
+      } 
+      this.Countrys = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA_Countrys);
+      }
+    });
+  }
+ 
 
 }
 
@@ -119,7 +261,7 @@ export class  CitysDialog {
 
   constructor(
     public dialogRef: MatDialogRef<CitysDialog>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData) {}
+    @Inject(MAT_DIALOG_DATA) public data: any) {}
 
   onNoClick(): void {
     this.dialogRef.close();
@@ -134,7 +276,7 @@ export class  StatesDialog {
 
   constructor(
     public dialogRef: MatDialogRef<StatesDialog>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData) {}
+    @Inject(MAT_DIALOG_DATA) public data: any) {}
 
   onNoClick(): void {
     this.dialogRef.close();
@@ -149,86 +291,31 @@ export class  CountrysDialog {
 
   constructor(
     public dialogRef: MatDialogRef<CountrysDialog>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData) {}
+    @Inject(MAT_DIALOG_DATA) public data: any) {}
 
   onNoClick(): void {
     this.dialogRef.close();
   }
 
 }
-export interface DialogData {
-  catname: string;
-  name: string;
-}
 
-export interface PeriodicElement {
+export class PeriodicElement {
   id: number;
   name: string;
 }
 
-const ELEMENT_DATA_Citys: PeriodicElement[] = [
-  {id: 1, name: 'C_Hydrogen',},
-  {id: 2, name: 'C_Helium',},
-  {id: 3, name: 'C_Lithium',},
-  {id: 4, name: 'C_Beryllium',},
-  {id: 5, name: 'C_Boron',},
-  {id: 6, name: 'C_Carbon',},
-  {id: 7, name: 'C_Nitrogen',},
-  {id: 8, name: 'C_Oxygen',},
-  {id: 9, name: 'C_Fluorine',},
-  {id: 10, name: 'C_Neon',},
-  {id: 11, name: 'C_Sodium',},
-  {id: 12, name: 'C_Magnesium',},
-  {id: 13, name: 'C_Aluminum',},
-  {id: 14, name: 'C_Silicon',},
-  {id: 15, name: 'C_Phosphorus',},
-  {id: 16, name: 'C_Sulfur',},
-  {id: 17, name: 'C_Chlorine',},
-  {id: 18, name: 'C_Argon',},
-  {id: 19, name: 'C_Potassium',},
-  {id: 20, name: 'C_Calcium',},
-];
-const ELEMENT_DATA_States: PeriodicElement[] = [
-  {id: 1, name: 'S_Hydrogen',},
-  {id: 2, name: 'S_Helium',},
-  {id: 3, name: 'S_Lithium',},
-  {id: 4, name: 'S_Beryllium',},
-  {id: 5, name: 'S_Boron',},
-  {id: 6, name: 'S_Carbon',},
-  {id: 7, name: 'S_Nitrogen',},
-  {id: 8, name: 'S_Oxygen',},
-  {id: 9, name: 'S_Fluorine',},
-  {id: 10, name: 'S_Neon',},
-  {id: 11, name: 'S_Sodium',},
-  {id: 12, name: 'S_Magnesium',},
-  {id: 13, name: 'S_Aluminum',},
-  {id: 14, name: 'S_Silicon',},
-  {id: 15, name: 'S_Phosphorus',},
-  {id: 16, name: 'S_Sulfur',},
-  {id: 17, name: 'S_Chlorine',},
-  {id: 18, name: 'S_Argon',},
-  {id: 19, name: 'S_Potassium',},
-  {id: 20, name: 'S_Calcium',},
-];
-const ELEMENT_DATA_Countrys: PeriodicElement[] = [
-  {id: 1, name: 'CO_Hydrogen',},
-  {id: 2, name: 'CO_Helium',},
-  {id: 3, name: 'CO_Lithium',},
-  {id: 4, name: 'CO_Beryllium',},
-  {id: 5, name: 'CO_Boron',},
-  {id: 6, name: 'CO_Carbon',},
-  {id: 7, name: 'CO_Nitrogen',},
-  {id: 8, name: 'CO_Oxygen',},
-  {id: 9, name: 'CO_Fluorine',},
-  {id: 10, name: 'CO_Neon',},
-  {id: 11, name: 'CO_Sodium',},
-  {id: 12, name: 'CO_Magnesium',},
-  {id: 13, name: 'CO_Aluminum',},
-  {id: 14, name: 'CO_Silicon',},
-  {id: 15, name: 'CO_Phosphorus',},
-  {id: 16, name: 'CO_Sulfur',},
-  {id: 17, name: 'CO_Chlorine',},
-  {id: 18, name: 'CO_Argon',},
-  {id: 19, name: 'CO_Potassium',},
-  {id: 20, name: 'CO_Calcium',},
-];
+export class InputData
+{
+  isedit : boolean;
+  AuthToken : string;
+  status : string;
+  success : boolean;
+  message : string;
+  timestamp : Date;
+  Data : any;
+  id : string;
+  ProductId : string;
+}
+const ELEMENT_DATA_Citys: PeriodicElement[] = [];
+const ELEMENT_DATA_States: PeriodicElement[] = [];
+const ELEMENT_DATA_Countrys: PeriodicElement[] = [];

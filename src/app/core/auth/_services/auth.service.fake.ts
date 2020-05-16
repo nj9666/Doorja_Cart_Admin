@@ -21,6 +21,7 @@ const API_ROLES_URL = 'api/roles';
 
 @Injectable()
 export class AuthService {
+    ss:Array<User> = [];
     constructor(private http: HttpClient,
                 private httpUtils: HttpUtilsService) { }
 
@@ -30,21 +31,28 @@ export class AuthService {
             return of(null);
         }
 
-        return  this.getAllUsers().pipe(
+        return  this.getAllUsers(email, password).pipe(
             map((result: User[]) => {
-                if (result.length <= 0) {
+                if (result['data'] == null) {
                     return null;
                 }
 
-                const user = find(result, (item: User) => {
+                this.ss.length = 0;
+                this.ss.push(result['data']);
+                
+                // const user = result['data'];
+                const user = find(this.ss, (item: User) => {
                     return (item.email.toLowerCase() === email.toLowerCase() && item.password === password);
                 });
 
                 if (!user) {
-                    return null;
+                    return user;
                 }
-
+                user.accessToken =result['token'];
                 user.password = undefined;
+
+                localStorage.setItem('user_Data',JSON.stringify(user));
+                localStorage.setItem('ApiToken',result['token']);
                 return user;
             })
         );
@@ -98,21 +106,22 @@ export class AuthService {
             return of(null);
         }
 
-        return this.getAllUsers().pipe(
+        return this.getAllUsers("","").pipe(
             map((result: User[]) => {
                 if (result.length <= 0) {
                     return null;
                 }
+                let user_Data = JSON.parse( localStorage.getItem('user_Data'));
+                this.ss.length = 0;
+                this.ss.push(user_Data);
 
-                const user = find(result, (item: User) => {
+                const user = find(this.ss, (item: User) => {
                     return (item.accessToken === userToken.toString());
                 });
 
                 if (!user) {
                     return null;
                 }
-
-                user.password = undefined;
                 return user;
             })
         );
@@ -129,8 +138,16 @@ export class AuthService {
     }
 
     // READ
-    getAllUsers(): Observable<User[]> {
-		return this.http.get<User[]>(API_USERS_URL);
+    getAllUsers(email, password): Observable<User[]> {
+        //return this.http.get<User[]>(API_USERS_URL);
+        
+        let BaseUrl = 'https://localhost:44336/api/ShopAPI/Adimn/Login';
+        //let BaseUrl = 'http://api.chinamart.co.in:81/api/Admin/Login.ym';
+        
+        let httpOptions = {headers: new HttpHeaders({'Content-Type': 'application/json'})};
+        let postData = { Email: email, Password: password }
+
+        return this.http.post<User[]>(BaseUrl, postData, httpOptions);
     }
 
     getUserById(userId: number): Observable<User> {
@@ -162,7 +179,7 @@ export class AuthService {
 	// items => filtered/sorted result
 	findUsers(queryParams: QueryParamsModel): Observable<QueryResultsModel> {
 		// This code imitates server calls
-		return this.getAllUsers().pipe(
+		return this.getAllUsers("","").pipe(
 			mergeMap((response: User[]) => {
 				const result = this.httpUtils.baseFilter(response, queryParams, []);
 				return of(result);
@@ -264,7 +281,7 @@ export class AuthService {
 
     // Check Role Before deletion
     isRoleAssignedToUsers(roleId: number): Observable<boolean> {
-        return this.getAllUsers().pipe(
+        return this.getAllUsers("","").pipe(
             map((users: User[]) => {
                 if (some(users, (user: User) => some(user.roles, (_roleId: number) => _roleId === roleId))) {
                     return true;

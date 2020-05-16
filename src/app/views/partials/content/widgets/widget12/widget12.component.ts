@@ -66,7 +66,7 @@ export class Widget12Component implements OnInit {
 						pointHoverBackgroundColor: this.layoutConfigService.getConfig('colors.state.brand'),
 						pointHoverBorderColor: Chart.helpers.color('#000000').alpha(0.1).rgbString(),
 
-						data: [25, 45, 55, 30, 40, 65, 35]
+						data: [25, 45, 55, 80, 40, 65, 35]
 					}
 				]
 			};
@@ -122,7 +122,7 @@ export class Widget12Component implements OnInit {
 							zeroLineBorderDash: [3, 4]
 						},
 						ticks: {
-							max: 70,
+							max: 100,
 							stepSize: 10,
 							display: true,
 							beginAtZero: true,

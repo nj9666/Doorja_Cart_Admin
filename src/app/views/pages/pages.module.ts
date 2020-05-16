@@ -8,6 +8,8 @@ import { PartialsModule } from '../partials/partials.module';
 // Pages
 import { CoreModule } from '../../core/core.module';
 
+import { SharedModule } from '../../Shared/shared.module';
+
 import { MatButtonModule, MatCheckboxModule, MatFormFieldModule, MatInputModule } from '@angular/material';
 
 
@@ -15,6 +17,7 @@ import { MatButtonModule, MatCheckboxModule, MatFormFieldModule, MatInputModule 
 	declarations: [],
 	exports: [],
 	imports: [
+		SharedModule,
 		CommonModule,
 		HttpClientModule,
 		FormsModule,
