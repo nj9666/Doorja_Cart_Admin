@@ -1,21 +1,21 @@
-<div ngbDropdown placement="bottom-right" *ngIf="user$ | async as _user" class="kt-header__topbar-item kt-header__topbar-item--user">
+<div ngbDropdown placement="bottom-right"  class="kt-header__topbar-item kt-header__topbar-item--user">
 	<div ngbDropdownToggle class="kt-header__topbar-wrapper">
-		<span class="kt-header__topbar-welcome" *ngIf="greeting">Hi,</span>
-		<span class="kt-header__topbar-username" *ngIf="greeting">{{_user.fullname}}</span>
-		<span *ngIf="badge" class="kt-header__topbar-icon"><b>{{_user.fullname|firstLetter}}</b></span>
+		<span class="kt-header__topbar-welcome kt-hidden-mobile" *ngIf="greeting">Hi,</span>
+		<span class="kt-header__topbar-username text-primary kt-hidden-mobile" *ngIf="greeting">{{_user.firstName}}</span>
+		<span *ngIf="badge" class="kt-header__topbar-icon kt-header__topbar-icon--brand"><b>{{_user.firstName|firstLetter}}</b></span>
 		<img *ngIf="avatar" alt="Pic" [attr.src]="_user.pic">
 	</div>
 	<div ngbDropdownMenu class="dropdown-menu dropdown-menu-fit dropdown-menu-right dropdown-menu-anim dropdown-menu-top-unround dropdown-menu-xl">
 		<!--begin: Head -->
 		<div class="kt-user-card kt-user-card--skin-dark kt-notification-item-padding-x" style="background-image: url(./assets/media/misc/bg-1.jpg)">
 			<div class="kt-user-card__avatar">
-				<img alt="Pic" [attr.src]="_user.pic"/>
-				<span [hidden]="true" class="kt-badge kt-badge--lg kt-badge--rounded kt-badge--bold kt-font-success">
-					{{_user.fullname|firstLetter}}
+				<img [hidden]="true" alt="Pic" [attr.src]="_user.pic"/>
+				<span class="kt-badge kt-badge--lg kt-badge--rounded kt-badge--bold kt-font-success">
+					{{_user.firstName|firstLetter}}
 				</span>
 			</div>
 			<div class="kt-user-card__name">
-				{{_user.fullname}}
+				{{_user.firstName}} {{_user.lastName}}
 			</div>
 			<div class="kt-user-card__badge">
 				<span class="btn btn-success btn-sm btn-bold btn-font-md">23 messages</span>

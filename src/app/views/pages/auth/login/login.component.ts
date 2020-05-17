@@ -17,8 +17,8 @@ import { AuthNoticeService, AuthService, Login } from '../../../../core/auth';
  * ! Just example => Should be removed in development
  */
 const DEMO_PARAMS = {
-	EMAIL: 'admin@demo.com',
-	PASSWORD: 'demo'
+	EMAIL: '9428632611',
+	PASSWORD: 'nitin1112'
 };
 
 @Component({
@@ -106,7 +106,6 @@ export class LoginComponent implements OnInit, OnDestroy {
 		this.loginForm = this.fb.group({
 			email: [DEMO_PARAMS.EMAIL, Validators.compose([
 				Validators.required,
-				Validators.email,
 				Validators.minLength(3),
 				Validators.maxLength(320) // https://stackoverflow.com/questions/386294/what-is-the-maximum-length-of-a-valid-email-address
 			])
@@ -143,6 +142,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 			.login(authData.email, authData.password)
 			.pipe(
 				tap(user => {
+					console.log(user);
 					if (user) {
 						this.store.dispatch(new Login({authToken: user.accessToken}));
 						this.router.navigateByUrl(this.returnUrl); // Main page

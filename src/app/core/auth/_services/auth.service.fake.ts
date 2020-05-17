@@ -40,10 +40,21 @@ export class AuthService {
                 this.ss.length = 0;
                 this.ss.push(result['data']);
                 
+                console.log(this.ss);
                 // const user = result['data'];
                 const user = find(this.ss, (item: User) => {
-                    return (item.email.toLowerCase() === email.toLowerCase() && item.password === password);
+                    console.log(item);
+                    console.log(item.userName);
+                    console.log(item.userName == email);
+                    console.log(email);
+                    console.log(item.contactNumber == email);
+                    console.log(item.contactNumber);
+                    console.log(password);
+                    console.log(item.password === password);
+                    return ((item.userName == email || item.contactNumber == email ) && item.password === password);
                 });
+
+                console.log(user);
 
                 if (!user) {
                     return user;
@@ -145,7 +156,7 @@ export class AuthService {
         //let BaseUrl = 'http://api.chinamart.co.in:81/api/Admin/Login.ym';
         
         let httpOptions = {headers: new HttpHeaders({'Content-Type': 'application/json'})};
-        let postData = { Email: email, Password: password }
+        let postData = { UserName: email, Password: password }
 
         return this.http.post<User[]>(BaseUrl, postData, httpOptions);
     }

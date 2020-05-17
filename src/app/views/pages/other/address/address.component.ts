@@ -50,6 +50,7 @@ export class AddressComponent implements OnInit {
       dialogRef.afterClosed().subscribe(result => {
         console.log('The dialog was closed');
         console.log(result);
+        this.InsertCity(result.catname);
       }); 
     }else if (f == 2) {
       const dialogRef = this.dialog.open(StatesDialog, {
@@ -59,6 +60,7 @@ export class AddressComponent implements OnInit {
       dialogRef.afterClosed().subscribe(result => {
         console.log('The dialog was closed');
         console.log(result);
+        this.InsertState(result.catname);
       }); 
     }else{
       const dialogRef = this.dialog.open(CountrysDialog, {
@@ -68,6 +70,7 @@ export class AddressComponent implements OnInit {
       dialogRef.afterClosed().subscribe(result => {
         console.log('The dialog was closed');
         console.log(result);
+        this.InsertCountry(result.catname);
       });
     }
     
@@ -166,12 +169,11 @@ export class AddressComponent implements OnInit {
       {
        console.log(data);
        ELEMENT_DATA_Citys.find(x => x.id === _id).name = _name;
-       this.Citys = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA_Citys);
+        this.Citys = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA_Citys);
+        this.Citys.paginator = this.paginator_Citys;
+        this.Citys.sort = this.sort_Citys;
       }
-      
     });
-    
-    
   }
   EditState(_id:number,_name:string){
       let State = {
@@ -184,11 +186,11 @@ export class AddressComponent implements OnInit {
        console.log(data);
        ELEMENT_DATA_States.find(x => x.id === _id).name = _name;
        this.States = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA_States);
+       this.States.paginator = this.paginator_States;
+       this.States.sort = this.sort_States;
+       
       }
-      
     });
-    
-    
   }
   EditCountry(_id:number,_name:string){
       let Country = {
@@ -201,11 +203,58 @@ export class AddressComponent implements OnInit {
        console.log(data);
        ELEMENT_DATA_Countrys.find(x => x.id === _id).name = _name;
        this.Countrys = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA_Countrys);
+       this.Countrys.paginator = this.paginator_Countrys;
+       this.Countrys.sort = this.sort_Countrys;
       }
-      
     });
-    
-    
+  }
+  InsertCity(_name:string){
+      let city = {
+      name : _name,
+    }; 
+    this.service.Data.ExecuteAPI<any>("City/Insert/",city).then((data:any) =>
+		{
+      console.log(data);
+      if (data.success)
+      {
+       ELEMENT_DATA_Citys.push(data.data);
+       this.Citys = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA_Citys);
+        this.Citys.paginator = this.paginator_Citys;
+        this.Citys.sort = this.sort_Citys;
+      }
+    });
+  }
+  InsertState(_name:string){
+      let State = {
+      name : _name,
+    }; 
+    this.service.Data.ExecuteAPI<any>("State/Insert/",State).then((data:any) =>
+		{
+      if (data.success)
+      {
+       console.log(data);
+       ELEMENT_DATA_States.push(data.data);
+       this.States = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA_States);
+       this.States.paginator = this.paginator_States;
+       this.States.sort = this.sort_States;
+      }
+    });
+  }
+  InsertCountry(_name:string){
+      let Country = {
+      name : _name,
+    }; 
+    this.service.Data.ExecuteAPI<any>("Country/Insert/",Country).then((data:any) =>
+		{
+      if (data.success)
+      {
+       console.log(data);
+       ELEMENT_DATA_Countrys.push(data.data);
+       this.Countrys = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA_Countrys);
+       this.Countrys.paginator = this.paginator_Countrys;
+       this.Countrys.sort = this.sort_Countrys;
+      }
+    });
   }
   RemoveCity(el){
     this.service.Data.ExecuteAPI<any>("City/Remove/"+el.id,null).then((data:any) =>
@@ -218,6 +267,8 @@ export class AddressComponent implements OnInit {
        ELEMENT_DATA_Citys.splice(index, 1);
       } 
       this.Citys = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA_Citys);
+        this.Citys.paginator = this.paginator_Citys;
+        this.Citys.sort = this.sort_Citys;
       }
     });
   }
@@ -232,6 +283,8 @@ export class AddressComponent implements OnInit {
        ELEMENT_DATA_States.splice(index, 1);
       } 
       this.States = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA_States);
+      this.States.paginator = this.paginator_States;
+      this.States.sort = this.sort_States;
       }
     });
   }
@@ -246,6 +299,8 @@ export class AddressComponent implements OnInit {
        ELEMENT_DATA_Countrys.splice(index, 1);
       } 
       this.Countrys = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA_Countrys);
+      this.Countrys.paginator = this.paginator_Countrys;
+      this.Countrys.sort = this.sort_Countrys;
       }
     });
   }

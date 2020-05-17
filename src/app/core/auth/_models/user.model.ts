@@ -4,7 +4,7 @@ import { SocialNetworks } from './social-networks.model';
 
 export class User extends BaseModel {
     id: number;
-    username: string;
+    userName: string;
     password: string;
     email: string;
     accessToken: string;
@@ -17,6 +17,9 @@ export class User extends BaseModel {
 	phone: string;
     address: Address;
     socialNetworks: SocialNetworks;
+    firstName:string;
+    lastName:string;
+    contactNumber:string;
 
     clear(): void {
         this.id = undefined;
