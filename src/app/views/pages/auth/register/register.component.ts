@@ -139,7 +139,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
 		const _user: User = new User();
 		_user.clear();
 		_user.email = controls.email.value;
-		_user.username = controls.username.value;
+		_user.userName = controls.username.value;
 		_user.fullname = controls.fullname.value;
 		_user.password = controls.password.value;
 		_user.roles = [];

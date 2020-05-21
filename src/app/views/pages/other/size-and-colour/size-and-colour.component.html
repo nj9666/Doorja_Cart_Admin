@@ -37,9 +37,9 @@
 							</ng-container>
 
 							<!-- Position Column -->
-							<ng-container matColumnDef="vid">
+							<ng-container matColumnDef="venderId">
 								<mat-header-cell *matHeaderCellDef class="mat-column-id"> Vender Id. </mat-header-cell>
-								<mat-cell *matCellDef="let element" class="mat-column-id"> {{element.vid}} </mat-cell>
+								<mat-cell *matCellDef="let element" class="mat-column-id"> {{element.venderId}} </mat-cell>
 							</ng-container>
 
 							<!-- Name Column -->
@@ -53,11 +53,11 @@
 								<mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
 								<mat-cell *matCellDef="let element">
 
-										<button mat-icon-button color="primary" *ngIf="element.vid == 0" matTooltip="Edit customer" (click)="editelement(element,1)">
+										<button mat-icon-button color="primary" *ngIf="element.venderId == null" matTooltip="Edit customer" (click)="editelement(element,1)">
 											<mat-icon>create</mat-icon>
 										</button>&nbsp;
 
-									<button mat-icon-button color="warn" matTooltip="Delete element" type="button" (click)="deleteelement(element)">
+									<button mat-icon-button color="warn" matTooltip="Delete element" type="button" (click)="RemoveSizes(element)">
 										<mat-icon>delete</mat-icon>
 									</button>&nbsp;
 
@@ -112,15 +112,18 @@
 							</ng-container>
 
 							<!-- Position Column -->
-							<ng-container matColumnDef="vid">
+							<ng-container matColumnDef="venderId">
 								<mat-header-cell *matHeaderCellDef class="mat-column-id"> Vender Id. </mat-header-cell>
-								<mat-cell *matCellDef="let element" class="mat-column-id"> {{element.vid}} </mat-cell>
+								<mat-cell *matCellDef="let element" class="mat-column-id"> {{element.venderId}} </mat-cell>
 							</ng-container>
 
 							<!-- Name Column -->
 							<ng-container matColumnDef="name">
-								<mat-header-cell *matHeaderCellDef mat-sort-header> Name </mat-header-cell>
-								<mat-cell *matCellDef="let element"> {{element.name}} </mat-cell>
+								<mat-header-cell *matHeaderCellDef mat-sort-header> Colour </mat-header-cell>
+								<mat-cell *matCellDef="let element">
+									<span class="mr-2 kt-badge kt-badge--inline kt-badge--pill" matTooltip="{{element.name}}" [ngStyle]="{'background-color':element.name}"> </span>
+									 {{element.name}}
+									 </mat-cell>
 							</ng-container>
 
 							<!-- Action Column -->
@@ -128,11 +131,11 @@
 								<mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
 								<mat-cell *matCellDef="let element">
 
-										<button mat-icon-button color="primary"  *ngIf="element.vid == 0" matTooltip="Edit customer" (click)="editelement(element,2)">
+										<button mat-icon-button color="primary"  *ngIf="element.venderId == null" matTooltip="Edit customer" (click)="editelement(element,2)">
 											<mat-icon>create</mat-icon>
 										</button>&nbsp;
 
-									<button mat-icon-button color="warn" matTooltip="Delete element" type="button" (click)="deleteelement(element)">
+									<button mat-icon-button color="warn" matTooltip="Delete element" type="button" (click)="RemoveColours(element)">
 										<mat-icon>delete</mat-icon>
 									</button>&nbsp;
 

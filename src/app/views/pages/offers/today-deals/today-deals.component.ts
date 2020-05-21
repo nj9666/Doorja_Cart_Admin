@@ -5,6 +5,10 @@ import {SelectionModel} from '@angular/cdk/collections';
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 import {animate, state, style, transition, trigger} from '@angular/animations';
 
+import { SystemService } from '../../../../Shared/SystemService';
+import { formatDate } from '@angular/common';
+
+
 @Component({
   selector: 'kt-today-deals',
   templateUrl: './today-deals.component.html',
@@ -18,14 +22,14 @@ import {animate, state, style, transition, trigger} from '@angular/animations';
   ],
 })
 export class TodayDealsComponent implements OnInit {
-  displayedColumns: string[] = ['select','id','vid', 'name'];
-  dataSource_product = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA_product);
-  selection = new SelectionModel<PeriodicElement>(true, []);
+  displayedColumns: string[] = ['select','vid','cat', 'sku', 'name','currentRating'];
+  dataSource_product = new MatTableDataSource<ProductLs>(ELEMENT_DATA_product);
+  selection = new SelectionModel<ProductLs>(true, []);
   @ViewChild('mat_pag_product', {read: MatPaginator, static: true}) paginator_product: MatPaginator;
   @ViewChild('mattbl_product', {read: MatSort, static: true}) sort_product: MatSort;
 
   
-  displayedColumns_deal: string[] = ['name', 'weight', 'symbol', 'position','action'];
+  displayedColumns_deal: string[] = ['discountType', 'discountAmount', 'startDate', 'action'];
   dataSource_deal = new MatTableDataSource<PeriodicElement_DEAL>(ELEMENT_DATA_DEAL);
   @ViewChild('mat_pag_deal', {read: MatPaginator, static: true}) paginator_deal: MatPaginator;
   @ViewChild('mattbl_deal', {read: MatSort, static: true}) sort_deal: MatSort;
@@ -34,39 +38,34 @@ export class TodayDealsComponent implements OnInit {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource_product.filter = filterValue.trim().toLowerCase();
   }
-  constructor(public dialog: MatDialog) { }
+  constructor(public dialog: MatDialog,public service: SystemService) { }
   
   getselected(){
     console.log(this.selection.selected);
   }
-
   applyFilter_deal(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource_deal.filter = filterValue.trim().toLowerCase();
   }
-
   /** Whether the number of selected elements matches the total number of rows. */
   isAllSelected() {
     const numSelected = this.selection.selected.length;
     const numRows = this.dataSource_product.data.length;
     return numSelected === numRows;
   }
-  
   /** Selects all rows if they are not all selected; otherwise clear selection. */
   masterToggle() {
     this.isAllSelected() ?
         this.selection.clear() :
         this.dataSource_product.data.forEach(row => this.selection.select(row));
   }
-
   /** The label for the checkbox on the passed row */
-  checkboxLabel(row?: PeriodicElement): string {
+  checkboxLabel(row?: ProductLs): string {
     if (!row) {
       return `${this.isAllSelected() ? 'select' : 'deselect'} all`;
     }
     return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.id + 1}`;
   }
-
   openDialog(): void {
     console.log(this.selection.selected);
     const dialogRef = this.dialog.open(DealDialog, {
@@ -76,17 +75,71 @@ export class TodayDealsComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       console.log('The dialog was closed');
+      console.log("--------");
       console.log(result);
+      if(result){
+        this.InsertDeal(result);
+      }
     });
   }
-
   ngOnInit() {
     this.dataSource_product.paginator = this.paginator_product;
     this.dataSource_product.sort = this.sort_product;
     this.dataSource_deal.paginator = this.paginator_deal;
     this.dataSource_deal.sort = this.sort_deal;
+    this.loadProduct();
+    this.loadDeal();
   }
+  InsertDeal(result:any){
+    var deal = {
+      discountType: result.discountType,
+      discountAmount: result.DiscountAmount,
+      startDate: result.StartDate,
+      proList:result.proList,
+    }; 
+    console.log(JSON.stringify(deal));
 
+    this.service.Data.ExecuteAPI<any>("Deal/Insert",deal).then((data:any) =>
+		{
+      console.log(data);
+      if (data.success)
+      {
+        ELEMENT_DATA_DEAL.push(deal);
+        this.dataSource_deal = new MatTableDataSource<PeriodicElement_DEAL>(ELEMENT_DATA_DEAL);
+        this.dataSource_deal.paginator = this.paginator_deal;
+        this.dataSource_deal.sort = this.sort_deal;
+        console.log(ELEMENT_DATA_DEAL);
+      }
+    });
+  }
+  loadProduct(){
+    this.service.Data.ExecuteAPI_Get<any>("Product/GetAll/Fordeal").then((data:any) =>
+		{
+      this.dataSource_product = new MatTableDataSource<any>([]);
+      if (data.success)
+      {
+        ELEMENT_DATA_product.length = 0;
+        data.data.forEach(element => { ELEMENT_DATA_product.push(element); });
+        this.dataSource_product = new MatTableDataSource<ProductLs>(ELEMENT_DATA_product);
+        this.dataSource_product.paginator = this.paginator_product;
+        this.dataSource_product.sort = this.sort_product;
+      }
+		});
+  }
+  loadDeal(){
+    this.service.Data.ExecuteAPI_Get<any>("Deal/GetAll").then((data:any) =>
+		{
+      this.dataSource_deal = new MatTableDataSource<any>([]);
+      if (data.success)
+      {
+        ELEMENT_DATA_DEAL.length = 0;
+        data.data.forEach(element => { ELEMENT_DATA_DEAL.push(element); });
+        this.dataSource_deal = new MatTableDataSource<PeriodicElement_DEAL>(ELEMENT_DATA_DEAL);
+        this.dataSource_deal.paginator = this.paginator_deal;
+        this.dataSource_deal.sort = this.sort_deal;
+      }
+		});
+  }
 }
 
 @Component({
@@ -102,109 +155,38 @@ export class  DealDialog {
   onNoClick(): void {
     this.dialogRef.close();
   }
+  remToSelection(el){
+    console.log(this.dialogRef);
+    console.log(el);
+    var proList = this.dialogRef.componentInstance.data.proList;
+    const index: number = proList.indexOf(proList.find(x => x.id === el.id));
+    if (index !== -1) {
+      proList.splice(index, 1);
+    }
+    console.log(this.dialogRef.componentInstance.data.proList); 
+  }
 
 }
 
 
-export interface PeriodicElement {
+export interface ProductLs {
   id: number;
   vid: number;
+  sku:string;
   name: string;
+  currentRating:number;
+  ratingCount:number;
+  cat:string;
 }
 
-const ELEMENT_DATA_product: PeriodicElement[] = [
-  {id: 1, vid: 0, name: 'Hydrogen',},
-  {id: 2, vid: 0, name: 'Helium',},
-  {id: 3, vid: 0, name: 'Lithium',},
-  {id: 4, vid: 0, name: 'Beryllium',},
-  {id: 5, vid: 1, name: 'Boron',},
-  {id: 6, vid: 1, name: 'Carbon',},
-  {id: 7, vid: 1, name: 'Nitrogen',},
-  {id: 8, vid: 1, name: 'Oxygen',},
-  {id: 9, vid: 2, name: 'Fluorine',},
-  {id: 10, vid: 2, name: 'Neon',},
-  {id: 11, vid: 2, name: 'Sodium',},
-  {id: 12, vid: 2, name: 'Magnesium',},
-  {id: 13, vid: 3, name: 'Aluminum',},
-  {id: 14, vid: 3, name: 'Silicon',},
-  {id: 15, vid: 3, name: 'Phosphorus',},
-  {id: 16, vid: 3, name: 'Sulfur',},
-  {id: 17, vid: 4, name: 'Chlorine',},
-  {id: 18, vid: 4, name: 'Argon',},
-  {id: 19, vid: 4, name: 'Potassium',},
-  {id: 20, vid: 4, name: 'Calcium',},
-];
-
+const ELEMENT_DATA_product: ProductLs[] = [];
 
 
 export interface PeriodicElement_DEAL {
-  name: string;
-  position: number;
-  weight: number;
-  symbol: string;
-  description: PeriodicElement[];
+  discountType: number;
+  discountAmount: number;
+  startDate: Date;
+  proList:ProductLs[];
 }
 
-const ELEMENT_DATA_DEAL: PeriodicElement_DEAL[] = [
-  {
-    position: 1,
-    name: 'Hydrogen',
-    weight: 1.0079,
-    symbol: 'H',
-    description:[ 
-      {id: 5, vid: 1, name: 'Boron',},
-      {id: 6, vid: 1, name: 'Carbon',},
-      {id: 7, vid: 1, name: 'Nitrogen',}
-    ]
-  }, {
-    position: 2,
-    name: 'Helium',
-    weight: 4.0026,
-    symbol: 'He',
-    description: [
-      {id: 5, vid: 1, name: 'Boron',},
-      {id: 6, vid: 1, name: 'Carbon',},
-      {id: 7, vid: 1, name: 'Nitrogen',}
-    ]
-  }, {
-    position: 3,
-    name: 'Lithium',
-    weight: 6.941,
-    symbol: 'Li',
-    description:[ 
-      {id: 5, vid: 1, name: 'Boron',},
-      {id: 6, vid: 1, name: 'Carbon',},
-      {id: 7, vid: 1, name: 'Nitrogen',}
-    ]
-  }, {
-    position: 4,
-    name: 'Beryllium',
-    weight: 9.0122,
-    symbol: 'Be',
-    description: [ 
-      {id: 5, vid: 1, name: 'Boron',},
-      {id: 6, vid: 1, name: 'Carbon',},
-      {id: 7, vid: 1, name: 'Nitrogen',}
-    ]
-  }, {
-    position: 5,
-    name: 'Boron',
-    weight: 10.811,
-    symbol: 'B',
-    description: [ 
-      {id: 5, vid: 1, name: 'Boron',},
-      {id: 6, vid: 1, name: 'Carbon',},
-      {id: 7, vid: 1, name: 'Nitrogen',}
-    ]
-  }, {
-    position: 6,
-    name: 'Carbon',
-    weight: 12.0107,
-    symbol: 'C',
-    description: [ 
-      {id: 5, vid: 1, name: 'Boron',},
-      {id: 6, vid: 1, name: 'Carbon',},
-      {id: 7, vid: 1, name: 'Nitrogen',}
-    ]
-  },
-];
+const ELEMENT_DATA_DEAL: PeriodicElement_DEAL[] = [];

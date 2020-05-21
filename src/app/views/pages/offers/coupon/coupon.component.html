@@ -29,36 +29,42 @@
 				<mat-table #mattbl_coupon [dataSource]="dataSource_coupon" matSort>
 
 					<!-- Column -->
-					<ng-container matColumnDef="CoupCode">
+					<ng-container matColumnDef="coupCode">
 						<mat-header-cell *matHeaderCellDef> Coupon Code </mat-header-cell>
-						<mat-cell *matCellDef="let element"> {{element.CoupCode}} </mat-cell>
+						<mat-cell *matCellDef="let element"> {{element.coupCode}} </mat-cell>
 					</ng-container>
 
 					<!-- Column -->
-					<ng-container matColumnDef="Name">
+					<ng-container matColumnDef="name">
 						<mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
-						<mat-cell *matCellDef="let element"> {{element.Name}} </mat-cell>
+						<mat-cell *matCellDef="let element"> {{element.name}} </mat-cell>
 					</ng-container>
 
 					<!-- Column -->
-					<ng-container matColumnDef="DiscountType">
+					<ng-container matColumnDef="discountType">
 						<mat-header-cell *matHeaderCellDef mat-sort-header class="justify-content-center"> Discount Type </mat-header-cell>
 						<mat-cell *matCellDef="let element" class="justify-content-center">
-							<span *ngIf="element.DiscountType" class="kt-badge kt-badge--success kt-badge--inline kt-badge--pill">Flat</span>
-							<span *ngIf="!element.DiscountType" class="kt-badge kt-badge--info kt-badge--inline kt-badge--pill">Percentage</span>
+							<span *ngIf="element.discountType == 1" class="kt-badge kt-badge--success kt-badge--inline kt-badge--pill">Flat</span>
+							<span *ngIf="element.discountType == 2" class="kt-badge kt-badge--info kt-badge--inline kt-badge--pill">Percentage</span>
 						</mat-cell>
 					</ng-container>
 
 					<!-- Column -->
-					<ng-container matColumnDef="DiscountAmount">
+					<ng-container matColumnDef="discountAmount">
 						<mat-header-cell *matHeaderCellDef mat-sort-header> Discount Amount </mat-header-cell>
-						<mat-cell *matCellDef="let element"> {{element.DiscountAmount}} </mat-cell>
+						<mat-cell *matCellDef="let element"> {{element.discountAmount}} </mat-cell>
 					</ng-container>
 
 					<!-- Column -->
-					<ng-container matColumnDef="StartDate">
+					<ng-container matColumnDef="startDate">
 						<mat-header-cell *matHeaderCellDef mat-sort-header> Start Date </mat-header-cell>
-						<mat-cell *matCellDef="let element"> {{element.StartDate | date }} </mat-cell>
+						<mat-cell *matCellDef="let element"> {{element.startDate | date }} </mat-cell>
+					</ng-container>
+
+					<!-- Column -->
+					<ng-container matColumnDef="endDate">
+						<mat-header-cell *matHeaderCellDef mat-sort-header> Start Date </mat-header-cell>
+						<mat-cell *matCellDef="let element"> {{element.endDate | date }} </mat-cell>
 					</ng-container>
 
 					<!-- Column -->

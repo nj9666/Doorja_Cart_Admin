@@ -23,7 +23,7 @@ export class User extends BaseModel {
 
     clear(): void {
         this.id = undefined;
-        this.username = '';
+        this.userName = '';
         this.password = '';
         this.email = '';
         this.roles = [];

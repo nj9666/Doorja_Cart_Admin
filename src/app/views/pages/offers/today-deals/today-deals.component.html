@@ -8,9 +8,6 @@
 					</h3>
 				</ng-container>
 				<ng-container ktPortletTools>
-					<button *ngIf="this.selection.selected.length != 0" (click)="openDialog()" mat-raised-button matTooltip="Create new Deal" color="primary" type="button">
-						<span>New Deal</span>
-					</button>
 					<span></span>
 				</ng-container>
 			</kt-portlet-header>
@@ -29,22 +26,22 @@
 					</div>
 					<div class="example-table-container">
 						<mat-table #mattbl_deal [dataSource]="dataSource_deal" multiTemplateDataRows>
-							<ng-container matColumnDef="name">
-								<mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
-								<mat-cell *matCellDef="let element"> {{element.name}} </mat-cell>
+							<ng-container matColumnDef="discountType">
+								<mat-header-cell *matHeaderCellDef> Discount Type </mat-header-cell>
+								<mat-cell *matCellDef="let element"> 
+									<span *ngIf="element.discountType == 1">Flat</span>	
+									<span *ngIf="element.discountType == 2">Percentage</span>	
+								</mat-cell>
 							</ng-container>
-							<ng-container matColumnDef="weight">
-								<mat-header-cell *matHeaderCellDef> weight </mat-header-cell>
-								<mat-cell *matCellDef="let element"> {{element.weight}} </mat-cell>
+							<ng-container matColumnDef="discountAmount">
+								<mat-header-cell *matHeaderCellDef> Amount </mat-header-cell>
+								<mat-cell *matCellDef="let element"> {{element.discountAmount}} </mat-cell>
 							</ng-container>
-							<ng-container matColumnDef="symbol">
-								<mat-header-cell *matHeaderCellDef> symbol </mat-header-cell>
-								<mat-cell *matCellDef="let element"> {{element.symbol}} </mat-cell>
+							<ng-container matColumnDef="startDate">
+								<mat-header-cell *matHeaderCellDef> Deal Date </mat-header-cell>
+								<mat-cell *matCellDef="let element"> {{element.startDate | date:'dd-MMM-yyyy'}} </mat-cell>
 							</ng-container>
-							<ng-container matColumnDef="position">
-								<mat-header-cell *matHeaderCellDef> position </mat-header-cell>
-								<mat-cell *matCellDef="let element"> {{element.position}} </mat-cell>
-							</ng-container>
+							
 							<ng-container matColumnDef="action">
 								<mat-header-cell *matHeaderCellDef> Action </mat-header-cell>
 								<mat-cell *matCellDef="let element"> 
@@ -63,16 +60,18 @@
 								<mat-cell *matCellDef="let element" [attr.colspan]="displayedColumns_deal.length">
 									<div class="example-element-detail" [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
 
-										<h4 mat-subheader class="py-2">Product list</h4>
+										<h5 mat-subheader class="py-2">Product list</h5>
 										<div class="row px-1">
-											<div class="col-md-4" *ngFor="let product of element.description">
+											<div class="col-md-6" *ngFor="let product of element.proList">
 												<mat-card class="example-card">
 													<mat-card-header>
-														<mat-card-title>{{product.name}}</mat-card-title>
-														<mat-card-subtitle>$120.00</mat-card-subtitle>
+														<mat-card-title><small>{{product.name}}</small></mat-card-title>
+														<mat-card-subtitle>{{product.cat}}</mat-card-subtitle>
 													</mat-card-header>
 													<mat-card-content>
-														<p>{{product.id | date}}</p>
+														<p>{{product.currentRating}} ({{product.ratingCount}}) <span class="text-warning material-icons" style="vertical-align: middle;">
+															star
+														</span> </p>
 													</mat-card-content>
 												</mat-card>
 											</div>
@@ -136,22 +135,34 @@
 								</mat-cell>
 							</ng-container>
 
-							<!-- Position Column -->
-							<ng-container matColumnDef="id">
-								<mat-header-cell *matHeaderCellDef class="mat-column-id"> Id. </mat-header-cell>
-								<mat-cell *matCellDef="let element" class="mat-column-id"> {{element.id}} </mat-cell>
-							</ng-container>
-
+							
 							<!-- Position Column -->
 							<ng-container matColumnDef="vid">
-								<mat-header-cell *matHeaderCellDef class="mat-column-id"> VId. </mat-header-cell>
+								<mat-header-cell *matHeaderCellDef class="mat-column-id"> VId </mat-header-cell>
 								<mat-cell *matCellDef="let element" class="mat-column-id"> {{element.vid}} </mat-cell>
+							</ng-container>
+							<!-- Position Column -->
+							<ng-container matColumnDef="cat">
+								<mat-header-cell *matHeaderCellDef> Cat </mat-header-cell>
+								<mat-cell *matCellDef="let element"> {{element.cat}} </mat-cell>
+							</ng-container>
+							<!-- Position Column -->
+							<ng-container matColumnDef="sku">
+								<mat-header-cell *matHeaderCellDef class="mat-column-id"> sku </mat-header-cell>
+								<mat-cell *matCellDef="let element" class="mat-column-id"> {{element.sku}} </mat-cell>
 							</ng-container>
 
 							<!-- Name Column -->
 							<ng-container matColumnDef="name">
 								<mat-header-cell *matHeaderCellDef mat-sort-header> Name </mat-header-cell>
 								<mat-cell *matCellDef="let element"> {{element.name}} </mat-cell>
+							</ng-container>
+							<!-- Name Column -->
+							<ng-container matColumnDef="currentRating">
+								<mat-header-cell *matHeaderCellDef mat-sort-header class="mat-column-id justify-content-end"> Rating </mat-header-cell>
+								<mat-cell *matCellDef="let element" class="mat-column-id justify-content-end"> {{element.currentRating}} ({{ratingCount}}) <span class="text-warning material-icons" style="vertical-align: middle;">
+									star
+								</span>  </mat-cell>
 							</ng-container>
 
 							<mat-header-row *matHeaderRowDef="displayedColumns;sticky: true"></mat-header-row>

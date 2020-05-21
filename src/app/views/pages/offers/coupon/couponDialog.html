@@ -4,31 +4,15 @@
 	<div class="container-fluid">
 		<div class="row">
 			<div class="col-md-4">
-				<mat-form-field>
+				<mat-form-field class="example-full-width">
 					<mat-label>Coupon Code</mat-label>
-					<input matInput [(ngModel)]="data.obj.CoupCode">
+					<input matInput [(ngModel)]="data.obj.coupCode">
 				</mat-form-field>
 			</div>
 			<div class="col-md-4">
-				<mat-form-field>
+				<mat-form-field class="example-full-width">
 					<mat-label>Name</mat-label>
-					<input matInput [(ngModel)]="data.obj.Name">
-				</mat-form-field>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-md-4">
-				<mat-form-field>
-					<mat-label>Discount Amount</mat-label>
-					<input matInput [(ngModel)]="data.obj.DiscountAmount">
-				</mat-form-field>
-            </div>
-			<div class="col-md-4">
-				<mat-form-field>
-					<mat-label>Start Date</mat-label>
-					<input matInput [min]="data.minDate" [matDatepicker]="dp3" disabled [(ngModel)]="data.obj.StartDate">
-					<mat-datepicker-toggle matSuffix [for]="dp3"></mat-datepicker-toggle>
-					<mat-datepicker #dp3 disabled="false"></mat-datepicker>
+					<input matInput [(ngModel)]="data.obj.name">
 				</mat-form-field>
 			</div>
 		</div>
@@ -36,11 +20,11 @@
             <div class="col-md-4">
 
 				<label id="Discount">Pick your Discount Type</label>
-				<mat-radio-group aria-labelledby="Discount" class="example-radio-group" style="flex-direction: row;" [(ngModel)]="data.obj.DiscountType">
-					<mat-radio-button class="example-radio-button" [value]="true">
+				<mat-radio-group aria-labelledby="Discount" class="example-radio-group" style="flex-direction: row;" [(ngModel)]="data.obj.discountType">
+					<mat-radio-button class="example-radio-button" [value]="1">
 						Flat
 					</mat-radio-button>
-					<mat-radio-button class="example-radio-button" [value]="false">
+					<mat-radio-button class="example-radio-button" [value]="2">
 						Percentage
 					</mat-radio-button>
 				</mat-radio-group>
@@ -48,10 +32,35 @@
 			</div>
 		</div>
 		<div class="row">
+			<div class="col-md-4">
+				<mat-form-field class="example-full-width">
+					<mat-label>Discount Amount</mat-label>
+					<input matInput [(ngModel)]="data.obj.discountAmount">
+				</mat-form-field>
+            </div>
+			<div class="col-md-4">
+				<mat-form-field class="example-full-width">
+					<mat-label>Start Date</mat-label>
+					<input matInput [min]="data.minDate" [matDatepicker]="dp3" disabled [(ngModel)]="data.obj.startDate">
+					<mat-datepicker-toggle matSuffix [for]="dp3"></mat-datepicker-toggle>
+					<mat-datepicker #dp3 disabled="false"></mat-datepicker>
+				</mat-form-field>
+			</div>
+			<div class="col-md-4">
+				<mat-form-field class="example-full-width">
+					<mat-label>End Date</mat-label>
+					<input matInput [min]="data.minDate" [matDatepicker]="dp4" disabled [(ngModel)]="data.obj.endDate">
+					<mat-datepicker-toggle matSuffix [for]="dp4"></mat-datepicker-toggle>
+					<mat-datepicker #dp4 disabled="false"></mat-datepicker>
+				</mat-form-field>
+			</div>
+		</div>
+		
+		<div class="row">
 			<div class="col-md-8">
 				<mat-form-field class="example-full-width">
 					<mat-label>Description</mat-label>
-					<textarea matInput [(ngModel)]="data.obj.Description"></textarea>
+					<textarea matInput [(ngModel)]="data.obj.description"></textarea>
 				</mat-form-field>
 			</div>
 		</div>

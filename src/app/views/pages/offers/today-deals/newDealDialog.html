@@ -27,10 +27,10 @@
 	<mat-list>
 		<div mat-subheader>Folders</div>
 		<mat-list-item *ngFor="let item of data.proList">
-			<mat-icon mat-list-icon color="primary">folder</mat-icon>
-			<div mat-line>{{item.name}}</div>
-			<div mat-line> {{item.vid}}{{item.id}} </div>
-			<button mat-icon-button color="warn">
+			<mat-icon mat-list-icon color="primary">pages</mat-icon>
+			<div mat-line>{{item.name}} - {{item.currentRating}} <span class="text-warning material-icons" style="vertical-align: middle;"> star </span></div>
+			<div mat-line> {{item.cat}}  </div>
+			<button mat-icon-button (click)="remToSelection(item)" color="warn">
 				<mat-icon>delete</mat-icon>
 			</button>
 		</mat-list-item>
