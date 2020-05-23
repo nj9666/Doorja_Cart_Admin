@@ -6,7 +6,7 @@ import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog
 import {animate, state, style, transition, trigger} from '@angular/animations';
 
 import { SystemService } from '../../../../Shared/SystemService';
-import { formatDate } from '@angular/common';
+import { formatDate, DatePipe } from '@angular/common';
 
 
 @Component({
@@ -34,11 +34,14 @@ export class TodayDealsComponent implements OnInit {
   @ViewChild('mat_pag_deal', {read: MatPaginator, static: true}) paginator_deal: MatPaginator;
   @ViewChild('mattbl_deal', {read: MatSort, static: true}) sort_deal: MatSort;
 
+  oldDeal:any;
+
+
   applyFilter_product(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource_product.filter = filterValue.trim().toLowerCase();
   }
-  constructor(public dialog: MatDialog,public service: SystemService) { }
+  constructor(public dialog: MatDialog,public service: SystemService,private datePipe: DatePipe) { }
   
   getselected(){
     console.log(this.selection.selected);
@@ -77,8 +80,36 @@ export class TodayDealsComponent implements OnInit {
       console.log('The dialog was closed');
       console.log("--------");
       console.log(result);
-      if(result){
+      if(result && result.discountAmount > 0){
+        result.startDate = this.datePipe.transform(result.startDate),
         this.InsertDeal(result);
+      }
+    });
+  }
+  editelement(el){
+    this.oldDeal = el;
+    console.log(el);
+    const dialogRef = this.dialog.open(DealDialog, {
+      width: '700px',
+      data: {
+        dialogtext: "Edit this", 
+        minDate:new Date(),
+        discountType:el.discountType,
+        discountAmount : el.discountAmount,
+        startDate : this.datePipe.transform(el.startDate),
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+      console.log(result);
+      if(result){
+        var obj ={
+          discountType : result.discountType,
+          discountAmount : result.discountAmount,
+          startDate : this.datePipe.transform(result.startDate),
+        }
+        this.EditDeal(obj);
       }
     });
   }
@@ -90,11 +121,11 @@ export class TodayDealsComponent implements OnInit {
     this.loadProduct();
     this.loadDeal();
   }
-  InsertDeal(result:any){
+  InsertDeal(result){
     var deal = {
       discountType: result.discountType,
-      discountAmount: result.DiscountAmount,
-      startDate: result.StartDate,
+      discountAmount: result.discountAmount,
+      startDate: result.startDate,
       proList:result.proList,
     }; 
     console.log(JSON.stringify(deal));
@@ -139,6 +170,48 @@ export class TodayDealsComponent implements OnInit {
         this.dataSource_deal.sort = this.sort_deal;
       }
 		});
+  }
+  EditDeal(obj){
+    var sendobj = []
+    sendobj.push(this.oldDeal)
+    sendobj.push(obj)
+    console.log(this.oldDeal);
+    console.log(obj);
+    this.service.Data.ExecuteAPI<any>("Deal/Edit/",sendobj).then((data:any) =>
+    {
+      if (data.success)
+      {
+        console.log(data);
+        this.service.Data.ExecuteAPI_Get<any>("Deal/GetAll").then((data:any) =>
+        {
+          this.dataSource_deal = new MatTableDataSource<any>([]);
+          if (data.success)
+          {
+            ELEMENT_DATA_DEAL.length = 0;
+            data.data.forEach(element => { ELEMENT_DATA_DEAL.push(element); });
+            this.dataSource_deal = new MatTableDataSource<PeriodicElement_DEAL>(ELEMENT_DATA_DEAL);
+            this.dataSource_deal.paginator = this.paginator_deal;
+            this.dataSource_deal.sort = this.sort_deal;
+          }
+        });
+      }
+    });
+  }
+  RemoveDeal(obj){
+    this.service.Data.ExecuteAPI<any>("Deal/Remove/",obj).then((data:any) =>
+		{
+      if (data.success)
+      {
+       console.log(data);
+       const index: number = ELEMENT_DATA_DEAL.indexOf(ELEMENT_DATA_DEAL.find(x => x.discountType === obj.discountType && x.discountAmount == obj.discountAmount && x.startDate == obj.startDate));
+      if (index !== -1) {
+        ELEMENT_DATA_DEAL.splice(index, 1);
+      } 
+      this.dataSource_deal = new MatTableDataSource<PeriodicElement_DEAL>(ELEMENT_DATA_DEAL);
+        this.dataSource_deal.paginator = this.paginator_deal;
+        this.dataSource_deal.sort = this.sort_deal;
+      }
+    });
   }
 }
 

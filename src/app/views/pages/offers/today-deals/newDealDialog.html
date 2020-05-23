@@ -13,13 +13,13 @@
 
 	<mat-form-field>
 		<mat-label>Discount Amount</mat-label>
-		<input matInput [(ngModel)]="data.DiscountAmount">
+		<input matInput [(ngModel)]="data.discountAmount">
 	</mat-form-field>
 
 
 	<mat-form-field>
 		<mat-label>Start Date</mat-label>
-		<input matInput [min]="data.minDate" [matDatepicker]="dp3" disabled [(ngModel)]="data.StartDate">
+		<input matInput [min]="data.minDate" [matDatepicker]="dp3" disabled [(ngModel)]="data.startDate">
 		<mat-datepicker-toggle matSuffix [for]="dp3"></mat-datepicker-toggle>
 		<mat-datepicker #dp3 disabled="false"></mat-datepicker>
 	</mat-form-field>

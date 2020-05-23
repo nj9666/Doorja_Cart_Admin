@@ -1,5 +1,5 @@
 <div class="row">
-	<div class="col-md-6">
+	<div class="col-md-5">
 		<kt-portlet>
 			<kt-portlet-header [class]="'kt-portlet__head--lg'">
 				<ng-container ktPortletTitle>
@@ -28,9 +28,9 @@
 						<mat-table #mattbl_deal [dataSource]="dataSource_deal" multiTemplateDataRows>
 							<ng-container matColumnDef="discountType">
 								<mat-header-cell *matHeaderCellDef> Discount Type </mat-header-cell>
-								<mat-cell *matCellDef="let element"> 
-									<span *ngIf="element.discountType == 1">Flat</span>	
-									<span *ngIf="element.discountType == 2">Percentage</span>	
+								<mat-cell *matCellDef="let element">
+									<span *ngIf="element.discountType == 1">Flat</span>
+									<span *ngIf="element.discountType == 2">Percentage</span>
 								</mat-cell>
 							</ng-container>
 							<ng-container matColumnDef="discountAmount">
@@ -41,39 +41,40 @@
 								<mat-header-cell *matHeaderCellDef> Deal Date </mat-header-cell>
 								<mat-cell *matCellDef="let element"> {{element.startDate | date:'dd-MMM-yyyy'}} </mat-cell>
 							</ng-container>
-							
+
 							<ng-container matColumnDef="action">
 								<mat-header-cell *matHeaderCellDef> Action </mat-header-cell>
-								<mat-cell *matCellDef="let element"> 
-                                    <button mat-icon-button color="primary" matTooltip="Edit customer" (click)="editelement(element)">
-                                        <mat-icon>create</mat-icon>
-                                    </button>&nbsp;
-    
-                                    <button mat-icon-button color="warn" matTooltip="Delete element" type="button" (click)="deleteelement(element)">
-                                        <mat-icon>delete</mat-icon>
-                                    </button>&nbsp;    
-                                </mat-cell>
+								<mat-cell *matCellDef="let element">
+									<button mat-icon-button color="primary" matTooltip="Edit customer" (click)="editelement(element)">
+										<mat-icon>create</mat-icon>
+									</button>&nbsp;
+
+									<button mat-icon-button color="warn" matTooltip="Delete element" type="button" (click)="RemoveDeal(element)">
+										<mat-icon>delete</mat-icon>
+									</button>&nbsp;
+								</mat-cell>
 							</ng-container>
 
 							<!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
 							<ng-container matColumnDef="expandedDetail">
-								<mat-cell *matCellDef="let element" [attr.colspan]="displayedColumns_deal.length">
+								<mat-cell *matCellDef="let element" [attr.colspan]="displayedColumns_deal.length" class="px-0">
 									<div class="example-element-detail" [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
-
-										<h5 mat-subheader class="py-2">Product list</h5>
-										<div class="row px-1">
-											<div class="col-md-6" *ngFor="let product of element.proList">
-												<mat-card class="example-card">
-													<mat-card-header>
-														<mat-card-title><small>{{product.name}}</small></mat-card-title>
-														<mat-card-subtitle>{{product.cat}}</mat-card-subtitle>
-													</mat-card-header>
-													<mat-card-content>
-														<p>{{product.currentRating}} ({{product.ratingCount}}) <span class="text-warning material-icons" style="vertical-align: middle;">
-															star
-														</span> </p>
-													</mat-card-content>
-												</mat-card>
+										<div class="container-fluid">
+											<h5 mat-subheader class="py-2">Product list</h5>
+											<div class="row px-1">
+												<div class="col-md-6" *ngFor="let product of element.proList">
+													<mat-card class="example-card kt-portlet--height-fluid kt-portlet kt-portlet--border-bottom-success">
+														<mat-card-header>
+															<mat-card-title><small>{{product.name}}</small></mat-card-title>
+															<mat-card-subtitle>{{product.cat}}</mat-card-subtitle>
+														</mat-card-header>
+														<mat-card-content>
+															<p>{{product.currentRating}} ({{product.ratingCount}}) <span class="text-warning material-icons" style="vertical-align: middle;">
+																	star
+																</span> </p>
+														</mat-card-content>
+													</mat-card>
+												</div>
 											</div>
 										</div>
 									</div>
@@ -92,7 +93,7 @@
 		</kt-portlet>
 	</div>
 
-	<div class="col-md-6">
+	<div class="col-md-7">
 		<kt-portlet>
 			<kt-portlet-header [class]="'kt-portlet__head--lg'">
 				<ng-container ktPortletTitle>
@@ -135,7 +136,7 @@
 								</mat-cell>
 							</ng-container>
 
-							
+
 							<!-- Position Column -->
 							<ng-container matColumnDef="vid">
 								<mat-header-cell *matHeaderCellDef class="mat-column-id"> VId </mat-header-cell>
@@ -159,10 +160,10 @@
 							</ng-container>
 							<!-- Name Column -->
 							<ng-container matColumnDef="currentRating">
-								<mat-header-cell *matHeaderCellDef mat-sort-header class="mat-column-id justify-content-end"> Rating </mat-header-cell>
-								<mat-cell *matCellDef="let element" class="mat-column-id justify-content-end"> {{element.currentRating}} ({{ratingCount}}) <span class="text-warning material-icons" style="vertical-align: middle;">
-									star
-								</span>  </mat-cell>
+								<mat-header-cell *matHeaderCellDef mat-sort-header class=" justify-content-end"> Rating </mat-header-cell>
+								<mat-cell *matCellDef="let element" class=" justify-content-end"> {{element.currentRating}} <span class="text-warning material-icons" style="vertical-align: middle;">
+										star
+									</span> <small>({{element.ratingCount}}) </small> </mat-cell>
 							</ng-container>
 
 							<mat-header-row *matHeaderRowDef="displayedColumns;sticky: true"></mat-header-row>

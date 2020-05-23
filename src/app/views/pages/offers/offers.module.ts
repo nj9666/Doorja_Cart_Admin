@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 // Core Module
 import { CoreModule } from '../../../core/core.module';
 import { RouterModule } from '@angular/router';
@@ -12,7 +12,10 @@ import { TodayDealsComponent,DealDialog } from './today-deals/today-deals.compon
 
 import { MaterialModule } from '../../../../material-module';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-
+import { MAT_DATE_LOCALE } from '@angular/material';
+import {
+	MAT_MOMENT_DATE_FORMATS,
+  } from '@angular/material-moment-adapter';
 @NgModule({
   declarations: [OffersComponent, CouponComponent, TodayDealsComponent,DealDialog,CouponDialog],
   imports: [
@@ -39,6 +42,9 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 		},
 		
 	]),
+  ],
+  providers: [DatePipe,
+    {provide: MAT_DATE_LOCALE, useValue: MAT_MOMENT_DATE_FORMATS},
   ],
   entryComponents: [TodayDealsComponent,DealDialog,CouponDialog]
 })
