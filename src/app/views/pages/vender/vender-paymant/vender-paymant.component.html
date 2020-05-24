@@ -17,39 +17,39 @@
 				<mat-table #mattbl_vender_paymant [dataSource]="dataSource_vender_paymant" matSort>
 
 					<!-- Column -->
-					<ng-container matColumnDef="DisplayBusinessName">
+					<ng-container matColumnDef="displayBusinessName">
 						<mat-header-cell *matHeaderCellDef mat-sort-header> Business Name </mat-header-cell>
-						<mat-cell *matCellDef="let element"> {{element.DisplayBusinessName}} </mat-cell>
+						<mat-cell *matCellDef="let element"> {{element.displayBusinessName}} </mat-cell>
 					</ng-container>
 
 					<!-- Column -->
-					<ng-container matColumnDef="VenderFullName">
+					<ng-container matColumnDef="venderFullName">
 						<mat-header-cell *matHeaderCellDef mat-sort-header> Vender Name </mat-header-cell>
-						<mat-cell *matCellDef="let element"> {{element.VenderFullName}} </mat-cell>
+						<mat-cell *matCellDef="let element"> {{element.venderFullName}} </mat-cell>
                     </ng-container>
                     
 					<!-- Column -->
-					<ng-container matColumnDef="BankAccount">
+					<ng-container matColumnDef="bankAccount">
 						<mat-header-cell *matHeaderCellDef > Bank Account </mat-header-cell>
-						<mat-cell *matCellDef="let element"> {{element.BankAccount}} </mat-cell>
+						<mat-cell *matCellDef="let element"> {{element.bankAccount}} </mat-cell>
 					</ng-container>
 				
 					<!-- Column -->
-					<ng-container matColumnDef="NeftId">
-						<mat-header-cell *matHeaderCellDef > NEFT Id </mat-header-cell>
-						<mat-cell *matCellDef="let element"> {{element.NeftId}} </mat-cell>
+					<ng-container matColumnDef="transid">
+						<mat-header-cell *matHeaderCellDef > Transaction Id </mat-header-cell>
+						<mat-cell *matCellDef="let element"> {{element.transid}} </mat-cell>
 					</ng-container>
 				
 					<!-- Column -->
-					<ng-container matColumnDef="PaymantAmount">
-						<mat-header-cell *matHeaderCellDef mat-sort-header> Paymant Amount </mat-header-cell>
-						<mat-cell *matCellDef="let element"> ${{element.PaymantAmount}} </mat-cell>
+					<ng-container matColumnDef="paymantAmount">
+						<mat-header-cell *matHeaderCellDef mat-sort-header class="justify-content-end"> Paymant Amount </mat-header-cell>
+						<mat-cell *matCellDef="let element" class="justify-content-end"> {{element.paymantAmount | currency}} </mat-cell>
                     </ng-container>
                     
 					<!-- Column -->
-					<ng-container matColumnDef="PaymantDate">
+					<ng-container matColumnDef="paymantDate">
 						<mat-header-cell *matHeaderCellDef mat-sort-header> Paymant Date </mat-header-cell>
-						<mat-cell *matCellDef="let element"> {{element.PaymantDate | date}} </mat-cell>
+						<mat-cell *matCellDef="let element"> {{element.paymantDate | date}} </mat-cell>
 					</ng-container>
 
 					<mat-header-row *matHeaderRowDef="displayedColumns;sticky: true"></mat-header-row>
