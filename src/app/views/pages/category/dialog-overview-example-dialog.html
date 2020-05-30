@@ -3,6 +3,7 @@
   <mat-form-field>
     <mat-label>Parant Category</mat-label>
     <mat-select [(value)]="data.pcatid">
+      <mat-option>None</mat-option>
       <mat-option *ngFor="let cat of data.pcats" [value]="cat.id">
         {{cat.name}}
       </mat-option>

@@ -17,34 +17,34 @@
 				<mat-table #mattbl_by_vender [dataSource]="dataSource_by_vender" matSort>
 
 					<!-- Column -->
-					<ng-container matColumnDef="DisplayBusinessName">
+					<ng-container matColumnDef="displayBusinessName">
 						<mat-header-cell *matHeaderCellDef mat-sort-header> Business Name </mat-header-cell>
-						<mat-cell *matCellDef="let element"> {{element.DisplayBusinessName}} </mat-cell>
+						<mat-cell *matCellDef="let element"> {{element.displayBusinessName}} </mat-cell>
 					</ng-container>
 
 					<!-- Column -->
-					<ng-container matColumnDef="VenderFullName">
+					<ng-container matColumnDef="venderFullName">
 						<mat-header-cell *matHeaderCellDef mat-sort-header> Vender Name </mat-header-cell>
-						<mat-cell *matCellDef="let element"> {{element.VenderFullName}} </mat-cell>
+						<mat-cell *matCellDef="let element"> {{element.venderFullName}} </mat-cell>
                     </ng-container>
                     
 					<!-- Column -->
-					<ng-container matColumnDef="TotalCount">
+					<ng-container matColumnDef="totalCount">
 						<mat-header-cell *matHeaderCellDef mat-sort-header> Total Count </mat-header-cell>
 						<mat-cell *matCellDef="let element"> 
-                            <span *ngIf="element.TotalCount > 2000" class="kt-badge kt-badge--success kt-badge--inline kt-badge--pill kt-badge--rounded">{{element.TotalCount}}</span>
-                            <span *ngIf="element.TotalCount < 1999 && element.TotalCount > 1500" class="kt-badge kt-badge--warning kt-badge--inline kt-badge--pill kt-badge--rounded">{{element.TotalCount}}</span>
-                            <span *ngIf="element.TotalCount < 1499 && element.TotalCount > 1000" class="kt-badge kt-badge--danger kt-badge--inline kt-badge--pill kt-badge--rounded">{{element.TotalCount}}</span>
-                            <span *ngIf="element.TotalCount < 999 && element.TotalCount > 500" class="kt-badge kt-badge--info kt-badge--inline kt-badge--pill kt-badge--rounded">{{element.TotalCount}}</span>
-                            <span *ngIf="element.TotalCount < 499" class="kt-badge kt-badge--light kt-badge--inline kt-badge--pill kt-badge--rounded">{{element.TotalCount}}</span>
-                             
+                            <span *ngIf="element.totalCount > 2000" class="kt-badge kt-badge--unified-success fa-2x kt-badge--bolder kt-badge--inline kt-badge--md kt-badge--rounded  kt-badge--wide">{{element.totalCount}}</span>
+                            <span *ngIf="element.totalCount < 1999 && element.totalCount > 1500" class="kt-badge kt-badge--unified-warning fa-2x kt-badge--bolder kt-badge--inline kt-badge--md kt-badge--rounded  kt-badge--wide">{{element.totalCount}}</span>
+                            <span *ngIf="element.totalCount < 1499 && element.totalCount > 1000" class="kt-badge kt-badge--unified-danger fa-2x kt-badge--bolder kt-badge--inline kt-badge--md kt-badge--rounded  kt-badge--wide">{{element.totalCount}}</span>
+                            <span *ngIf="element.totalCount < 999 && element.totalCount > 500" class="kt-badge kt-badge--unified-info fa-2x kt-badge--bolder kt-badge--inline kt-badge--md kt-badge--rounded  kt-badge--wide">{{element.totalCount}}</span>
+                            <span *ngIf="element.totalCount < 499" class="kt-badge kt-badge--unified-dark fa-2x kt-badge--bolder kt-badge--inline kt-badge--md kt-badge--rounded  kt-badge--wide">{{element.totalCount}}</span>
+							
                         </mat-cell>
 					</ng-container>
 				
 					<!-- Column -->
-					<ng-container matColumnDef="TotalAmount">
+					<ng-container matColumnDef="totalAmount">
 						<mat-header-cell *matHeaderCellDef mat-sort-header> Total Amount </mat-header-cell>
-						<mat-cell *matCellDef="let element"> ${{element.TotalAmount}} </mat-cell>
+						<mat-cell *matCellDef="let element"> ${{element.totalAmount}} </mat-cell>
 					</ng-container>
 				
 					

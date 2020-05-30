@@ -3,6 +3,7 @@ import { Component, OnInit,  ViewChild, Inject} from '@angular/core';
 import { MatSort,MatPaginator,MatTableDataSource} from '@angular/material';
 import {SelectionModel} from '@angular/cdk/collections';
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
+import { SystemService } from '../../../Shared/SystemService';
 
 @Component({
   selector: 'kt-category',
@@ -11,7 +12,7 @@ import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog
 })
 
 export class CategoryComponent implements OnInit {
-  displayedColumns: string[] = ['select','id','pid', 'name','actions'];
+  displayedColumns: string[] = ['select','id','pCatId', 'name','actions'];
   dataSource = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA);
   selection = new SelectionModel<PeriodicElement>(true, []);
 
@@ -22,7 +23,7 @@ export class CategoryComponent implements OnInit {
   pcats: PeriodicElement[];
   pcatid:number;
 
-  constructor( public dialog: MatDialog) { }
+  constructor( public dialog: MatDialog,public service: SystemService) { }
 
   openDialog(): void {
     console.log(this.pcats);
@@ -39,7 +40,7 @@ export class CategoryComponent implements OnInit {
   editelement(el){
     console.log(el);
     this.catname = el.name;
-    this.pcatid = el.pid;
+    this.pcatid = el.pCatId;
     const dialogRef = this.dialog.open(DialogOverviewExampleDialog, {
       width: '250px',
       data: {dialogtext: "Edit this", catname: this.catname, pcats:this.pcats, pcatid:this.pcatid}
@@ -85,14 +86,32 @@ export class CategoryComponent implements OnInit {
   ngOnInit() {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
-    this.pcats = ELEMENT_DATA.filter(ispcat)
+    this.loadCats();
+    
   }
 
+  loadCats(){
+    this.service.Data.ExecuteAPI_Get<any>("Category/GetAll").then((data:any) =>
+		{
+      this.dataSource = new MatTableDataSource<any>([]);
+      if (data.success)
+      {
+        console.log(data.data);
+        ELEMENT_DATA.length = 0;
+        data.data.forEach(element => { ELEMENT_DATA.push(element); });
+        this.dataSource = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA);
+        this.dataSource.paginator = this.paginator;
+        this.dataSource.sort = this.sort;
+        this.pcats = ELEMENT_DATA.filter(ispcat);
+      console.log(this.pcats);
+      }
+		});
+  }
   
 
 }
 function ispcat(element, index, array) { 
-  return (element.pid == 0); 
+  return (element.pCatId == null); 
 }
 
 @Component({
@@ -113,29 +132,9 @@ export class  DialogOverviewExampleDialog {
 
 export interface PeriodicElement {
   id: number;
-  pid: number;
+  pCatId: number;
   name: string;
 }
 
 const ELEMENT_DATA: PeriodicElement[] = [
-  {id: 1, pid: 0, name: 'Hydrogen',},
-  {id: 2, pid: 0, name: 'Helium',},
-  {id: 3, pid: 0, name: 'Lithium',},
-  {id: 4, pid: 0, name: 'Beryllium',},
-  {id: 5, pid: 1, name: 'Boron',},
-  {id: 6, pid: 1, name: 'Carbon',},
-  {id: 7, pid: 1, name: 'Nitrogen',},
-  {id: 8, pid: 1, name: 'Oxygen',},
-  {id: 9, pid: 2, name: 'Fluorine',},
-  {id: 10, pid: 2, name: 'Neon',},
-  {id: 11, pid: 2, name: 'Sodium',},
-  {id: 12, pid: 2, name: 'Magnesium',},
-  {id: 13, pid: 3, name: 'Aluminum',},
-  {id: 14, pid: 3, name: 'Silicon',},
-  {id: 15, pid: 3, name: 'Phosphorus',},
-  {id: 16, pid: 3, name: 'Sulfur',},
-  {id: 17, pid: 4, name: 'Chlorine',},
-  {id: 18, pid: 4, name: 'Argon',},
-  {id: 19, pid: 4, name: 'Potassium',},
-  {id: 20, pid: 4, name: 'Calcium',},
 ];

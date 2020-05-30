@@ -43,3 +43,32 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 									   color-stop(0.44, #1dc9b7),
 									   color-stop(0.86, #5867DD));
 }
+
+
+
+/*Start Notification*/
+.notification {
+	position: fixed;
+	padding: 1.25rem 1rem;
+	margin-bottom: 1rem;
+	/*border: 1px solid transparent;*/
+	border-radius: 0px;
+	min-width: 350px;
+	max-width: 350px;
+	top: 10px;
+	right: 10px;
+	z-index: 10500;
+ }
+ 
+	.notification .icon {
+		position: relative;
+		float: left;
+		font-size: 20px;
+		margin-right: 10px;
+	}
+ 
+	.notification .close {
+		padding: 1.25rem 1rem !important;
+		right: 0px;
+	}
+	/*End Notification*/

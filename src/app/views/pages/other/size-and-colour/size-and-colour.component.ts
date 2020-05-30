@@ -1,14 +1,16 @@
-import { Component, OnInit,  ViewChild, Inject} from '@angular/core';
+import { Component, OnInit,  ViewChild, Inject, Output, EventEmitter} from '@angular/core';
 import { MatSort,MatPaginator,MatTableDataSource} from '@angular/material';
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 
 import { SystemService } from '../../../../Shared/SystemService';
+import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 
 @Component({
   selector: 'kt-size-and-colour',
   templateUrl: './size-and-colour.component.html',
   styleUrls: ['./size-and-colour.component.scss']
 })
+
 export class SizeAndColourComponent implements OnInit {
   displayedColumns_Size: string[] = ['id','venderId', 'name','actions'];
   dataSource_size = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA_size);
@@ -20,31 +22,34 @@ export class SizeAndColourComponent implements OnInit {
 
 
   
-  constructor(public dialog: MatDialog,public service: SystemService) { }
+  constructor(public dialog: MatDialog,public service: SystemService) { 
+    isdataChange = true;
+  }
   
   openDialog(f:number): void {
     if (f == 1) {
       const dialogRef = this.dialog.open(SizeDialog, {
         width: '250px',
-        data: {dialogtext: "Add New"}
+        data: {dialogtext: "Add New",id:-1}
       });   
       dialogRef.afterClosed().subscribe(result => {
-        console.log('The dialog was closed');
+        console.log('The dialog was closed ++');
         console.log(result);
-        if(result.catname){
-          this.InsertSize(result.catname);
+        console.log(isdataChange);
+        if(isdataChange){
+          this.loadSize();
         }
       }); 
     }else{
       const dialogRef = this.dialog.open(colourDialog, {
         width: '250px',
-        data: {dialogtext: "Add New"}
+        data: {dialogtext: "Add New",id:-1}
       }); 
       dialogRef.afterClosed().subscribe(result => {
         console.log('The dialog was closed');
         console.log(result);
-        if(result.catname){
-          this.InsertColour(result.catname);
+        if(isdataChange){
+          this.loadColour();
         }
       });
     }
@@ -61,9 +66,8 @@ export class SizeAndColourComponent implements OnInit {
       dialogRef.afterClosed().subscribe(result => {
         console.log('The dialog was closed');
         console.log(result);
-        if(result){
-          console.log(result);
-          this.EditSize(result.id,result.catname)
+        if(isdataChange){
+          this.loadSize();
         }
       });
     }else{
@@ -75,9 +79,8 @@ export class SizeAndColourComponent implements OnInit {
       dialogRef.afterClosed().subscribe(result => {
         console.log('The dialog was closed');
         console.log(result);
-        if(result){
-          console.log(result);
-          this.EditColour(result.id,result.catname)
+        if(isdataChange){
+          this.loadColour();
         }
       });
     }
@@ -110,6 +113,7 @@ export class SizeAndColourComponent implements OnInit {
         this.dataSource_size = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA_size);
         this.dataSource_size.paginator = this.paginator_size;
         this.dataSource_size.sort = this.sort_size;
+        isdataChange = false;
       }
 		});
   }
@@ -124,73 +128,11 @@ export class SizeAndColourComponent implements OnInit {
         this.dataSource_colour = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA_colour);
         this.dataSource_colour.paginator = this.paginator_colour;
         this.dataSource_colour.sort = this.sort_colour;
+        isdataChange = false;
       }
 		});
   }
-  InsertSize(_name:string){
-    let Size = {
-      name : _name,
-    }; 
-    this.service.Data.ExecuteAPI<any>("Sizes/Insert/",Size).then((data:any) =>
-    {
-      console.log(data);
-      if (data.success)
-      {
-      ELEMENT_DATA_size.push(data.data);
-      this.dataSource_size = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA_size);
-        this.dataSource_size.paginator = this.paginator_size;
-        this.dataSource_size.sort = this.sort_size;
-      }
-    });
-  }
-  InsertColour(_name:string){
-    let Colour = {
-      name : _name,
-    }; 
-    this.service.Data.ExecuteAPI<any>("Colours/Insert/",Colour).then((data:any) =>
-    {
-      console.log(data);
-      if (data.success)
-      {
-      ELEMENT_DATA_colour.push(data.data);
-      this.dataSource_colour = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA_colour);
-        this.dataSource_colour.paginator = this.paginator_colour;
-        this.dataSource_colour.sort = this.sort_colour;
-      }
-    });
-  }
-  EditSize(_id:number,_name:string){
-    let Size = {
-      name : _name,
-    }; 
-    this.service.Data.ExecuteAPI<any>("Sizes/Edit/"+_id,Size).then((data:any) =>
-    {
-      console.log(data);
-      if (data.success)
-      {      
-        ELEMENT_DATA_size.find(x => x.id === _id).name = _name;
-        this.dataSource_size = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA_size);
-        this.dataSource_size.paginator = this.paginator_size;
-        this.dataSource_size.sort = this.sort_size;
-      }
-    });
-  }
-  EditColour(_id:number,_name:string){
-    let Colour = {
-      name : _name,
-    }; 
-    this.service.Data.ExecuteAPI<any>("Colours/Edit/"+_id,Colour).then((data:any) =>
-    {
-      console.log(data);
-      if (data.success)
-      {
-        ELEMENT_DATA_colour.find(x => x.id === _id).name = _name;
-        this.dataSource_colour = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA_colour);
-        this.dataSource_colour.paginator = this.paginator_colour;
-        this.dataSource_colour.sort = this.sort_colour;
-      }
-    });
-  }
+  
   RemoveSizes(el){
     this.service.Data.ExecuteAPI<any>("Sizes/Remove/"+el.id,null).then((data:any) =>
 		{
@@ -232,14 +174,74 @@ export class SizeAndColourComponent implements OnInit {
   templateUrl: 'SizeDialog.html',
 })
 export class  SizeDialog {
-
+  SizeForm:FormGroup;
   constructor(
-    public dialogRef: MatDialogRef<SizeDialog>,
-    @Inject(MAT_DIALOG_DATA) public data: any) {}
+    public fb: FormBuilder,
+    public service: SystemService,
+  public dialogRef: MatDialogRef<SizeDialog>,
+  @Inject(MAT_DIALOG_DATA) public data: any) {
+    this.initForm(this.data);
+  }
 
   onNoClick(): void {
     this.dialogRef.close();
   }
+  initForm(dt){
+    if(dt.id == -1){
+      this.SizeForm = this.fb.group({
+        SizeName:["",Validators.required]
+      });
+    }else{
+      this.SizeForm = this.fb.group({
+        SizeName:[dt.catname,Validators.required]
+      });
+    }
+    
+  }
+  
+  Addsize(){
+      console.log('The dialog was closed------------------------');
+      console.log(this.SizeForm.value.SizeName);
+      var _name = this.SizeForm.value.SizeName;
+      let Size = {
+        name : _name,
+      }; 
+      
+      if(this.data.id == -1){
+        this.service.Data.ExecuteAPI<any>("Sizes/Insert/",Size).then((data:any) =>
+        {
+          console.log(data);
+          if (data.success)
+          {
+            isdataChange = true;
+            this.service.success(data.message);
+          }else{
+            this.service.error(data.message);
+          }
+          
+          this.dialogRef.close();
+        });
+      }else{
+        this.service.Data.ExecuteAPI<any>("Sizes/Edit/"+this.data.id,Size).then((data:any) =>
+        {
+          console.log(data);
+          if (data.success)
+          {      
+            isdataChange = true;
+            this.service.success(data.message);
+          }else{
+            this.service.error(data.message);
+          }
+          
+          this.dialogRef.close();
+        });
+      }
+       
+  }
+
+
+
+  
 
 }
 @Component({
@@ -247,13 +249,66 @@ export class  SizeDialog {
   templateUrl: 'colourDialog.html',
 })
 export class  colourDialog {
-
+  ColorForm:FormGroup;
   constructor(
+    public fb: FormBuilder,
+    public service: SystemService,
     public dialogRef: MatDialogRef<colourDialog>,
-    @Inject(MAT_DIALOG_DATA) public data: any) {}
-
+    @Inject(MAT_DIALOG_DATA) public data: any) {
+      this.initForm(this.data);
+    }
+    initForm(dt){
+      if(dt.id == -1){
+        this.ColorForm = this.fb.group({
+          ColorName:["",Validators.required]
+        });
+      }else{
+        this.ColorForm = this.fb.group({
+          ColorName:[dt.catname,Validators.required]
+        });
+      }
+    }
   onNoClick(): void {
     this.dialogRef.close();
+  }
+  AddColor(){
+    console.log('The dialog was closed------------------------');
+    console.log(this.ColorForm.value.ColorName);
+    var _name = this.ColorForm.value.ColorName;
+    let Size = {
+      name : _name,
+    };
+    
+    if(this.data.id == -1){
+      this.service.Data.ExecuteAPI<any>("Colours/Insert/",Size).then((data:any) =>
+      {
+        console.log(data);
+        if (data.success)
+        {
+          isdataChange = true;
+          this.service.success(data.message);
+        }else{
+          this.service.error(data.message);
+        }
+        
+        this.dialogRef.close();
+      });
+    }else{
+      this.service.Data.ExecuteAPI<any>("Colours/Edit/"+this.data.id,Size).then((data:any) =>
+      {
+        console.log(data);
+        if (data.success)
+        {      
+          isdataChange = true;
+          this.service.success(data.message);
+        }else{
+          this.service.error(data.message);
+        }
+        
+        this.dialogRef.close();
+      });
+    } 
+
   }
 
 }
@@ -266,4 +321,6 @@ export interface PeriodicElement {
 
 const ELEMENT_DATA_size: PeriodicElement[] = [];
 const ELEMENT_DATA_colour: PeriodicElement[] = [];
+
+var isdataChange = false;
 

@@ -10,7 +10,7 @@
 			</div>
 			<div class="col-md-3">
 				<button *ngIf="!filltype" (click)="loadnewproduct()" mat-raised-button matTooltip="Last 30Days only" color="primary" type="button">
-					<span>Last 30Days only</span>
+					<span>Last 30 Days only</span>
 				</button>
 				<button *ngIf="filltype" (click)="loadproduct()" mat-raised-button matTooltip="Create Show all" color="primary" type="button">
 					<span>Show all</span>
@@ -44,7 +44,7 @@
 					<!-- Column -->
 					<ng-container matColumnDef="sku">
 						<mat-header-cell *matHeaderCellDef mat-sort-header> Product sku </mat-header-cell>
-						<mat-cell *matCellDef="let element"> {{element.Sku}} </mat-cell>
+						<mat-cell *matCellDef="let element"> {{element.sku}} </mat-cell>
 					</ng-container>
 
 				

@@ -13,11 +13,11 @@
 
 		<ng-container ktPortletTools>
 			
-			<button *ngIf="this.selection.selected.length != 0" (click)="getselected()" mat-raised-button matTooltip="Create new customer" color="primary" type="button">
+			<button *ngIf="this.selection.selected.length != 0" class="mr-2" (click)="getselected()" mat-raised-button matTooltip="Create new customer" color="primary" type="button">
 				<span>Get Selected</span>
 			</button>
 			<button (click)="openDialog()" mat-raised-button matTooltip="Create new customer" color="primary" type="button">
-				<span>New Customer</span>
+				<span>Add New Category</span>
 			</button>
 			<!-- Buttons (Material Angular) | See off.documenations 'https://material.angular.io/components/button/overview' -->
 			<!-- mat-raised-button | Rectangular contained button w/ elevation  -->
@@ -63,9 +63,9 @@
 					</ng-container>
 
 					<!-- Position Column -->
-					<ng-container matColumnDef="pid">
-						<mat-header-cell *matHeaderCellDef class="mat-column-id"> PId. </mat-header-cell>
-						<mat-cell *matCellDef="let element" class="mat-column-id"> {{element.pid}} </mat-cell>
+					<ng-container matColumnDef="pCatId">
+						<mat-header-cell *matHeaderCellDef class="mat-column-id"> pCatId. </mat-header-cell>
+						<mat-cell *matCellDef="let element" class="mat-column-id"> {{element.pCatId}} </mat-cell>
 					</ng-container>
 
 					<!-- Name Column -->

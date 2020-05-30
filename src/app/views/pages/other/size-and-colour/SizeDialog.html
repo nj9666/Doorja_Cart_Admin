@@ -1,12 +1,15 @@
-<h1 mat-dialog-title>{{data.dialogtext}} Size</h1>
+
+<form class="w-100" [formGroup]="SizeForm" (submit)="SizeForm.valid && Addsize()">
+  <h1 mat-dialog-title>{{data.dialogtext}} Size</h1>
 <div mat-dialog-content>
   
   <mat-form-field>
     <mat-label>Size</mat-label>
-    <input matInput [(ngModel)]="data.catname">
+    <input matInput formControlName="SizeName">
   </mat-form-field>
 </div>
 <div mat-dialog-actions>
-  <button mat-button (click)="onNoClick()">No Thanks</button>
-  <button mat-button [mat-dialog-close]="data" cdkFocusInitial>Ok</button>
+  <button mat-button type="button" (click)="onNoClick()">No Thanks</button>
+  <button mat-button type="submit" >{{data.id == -1 ?'Add':'Update'}}</button>
 </div>
+</form>
