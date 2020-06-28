@@ -3,6 +3,7 @@ import { Component, OnInit,  ViewChild, Inject} from '@angular/core';
 import { MatSort,MatPaginator,MatTableDataSource} from '@angular/material';
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 import { SystemService } from '../../../../Shared/SystemService';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 
 @Component({
   selector: 'kt-venders',
@@ -25,9 +26,13 @@ export class VendersComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       console.log('The dialog was closed');
       console.log(result);
-      if(result != null){
-        this.PayVender(result.obj,result.transid);
+      console.log(isdataChange);
+      if(isdataChange){
+        this.loadvender();
       }
+      // if(result != null){
+      //   this.PayVender(result.obj,result.transid);
+      // }
     });
   }
 
@@ -35,7 +40,9 @@ export class VendersComponent implements OnInit {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource_vender.filter = filterValue.trim().toLowerCase();
   }
-  constructor(public dialog: MatDialog,public service: SystemService) { }
+  constructor(public dialog: MatDialog,public service: SystemService) { 
+    isdataChange = true;
+  }
 
   ngOnInit() {
     this.dataSource_vender.paginator = this.paginator_vender;
@@ -53,6 +60,7 @@ export class VendersComponent implements OnInit {
         this.dataSource_vender = new MatTableDataSource<venderTbl>(ELEMENT_DATA_vender);
         this.dataSource_vender.paginator = this.paginator_vender;
         this.dataSource_vender.sort = this.sort_vender;
+        isdataChange = false;
       }
 		});
   }
@@ -89,13 +97,49 @@ export class VendersComponent implements OnInit {
   templateUrl: 'venderPayDialog.html',
 })
 export class  venderPayDialog {
-
+  PayForm:FormGroup;
   constructor(
+    public fb: FormBuilder,
+    public service: SystemService,
     public dialogRef: MatDialogRef<venderPayDialog>,
-    @Inject(MAT_DIALOG_DATA) public data: any) {}
+    @Inject(MAT_DIALOG_DATA) public data: any) {
+      this.initForm(this.data)
+    }
 
   onNoClick(): void {
     this.dialogRef.close();
+  }
+  initForm(dt){
+    this.PayForm = this.fb.group({
+      TraId:["",Validators.required],
+    });
+  }
+  AddPays(obj){
+    console.log('The dialog was closed------------------------');
+    console.log(this.PayForm.value.TraId);
+    var _TraId = this.PayForm.value.TraId;
+    var sendobj = {
+      VenderId: obj.id,
+      BankAccount: obj.accountNumber,
+      TransactionId: _TraId,
+      Amount:obj.paymantAmount
+    }
+    console.log("Send--->>");
+    console.log(sendobj);
+    this.service.Data.ExecuteAPI<any>("Vender/PayInsert",sendobj).then((data:any) =>
+    {
+      
+    console.log("Recive--->>");
+    console.log(data);
+    if (data.success)
+    {
+      isdataChange = true;
+      this.service.success(data.message);
+    }else{
+      this.service.error(data.message);
+    }
+    this.dialogRef.close();
+    });
   }
 
 }
@@ -116,6 +160,5 @@ export class venderTbl {
   branch:string;
   transid:string;
 }
-const ELEMENT_DATA_vender: venderTbl[] = [
- 
-];
+const ELEMENT_DATA_vender: venderTbl[] = [];
+var isdataChange = false;

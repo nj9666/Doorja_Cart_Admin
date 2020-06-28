@@ -13,9 +13,7 @@
 
 		<ng-container ktPortletTools>
 			
-			<button *ngIf="this.selection.selected.length != 0" class="mr-2" (click)="getselected()" mat-raised-button matTooltip="Create new customer" color="primary" type="button">
-				<span>Get Selected</span>
-			</button>
+			
 			<button (click)="openDialog()" mat-raised-button matTooltip="Create new customer" color="primary" type="button">
 				<span>Add New Category</span>
 			</button>
@@ -45,7 +43,7 @@
 				<mat-table [dataSource]="dataSource" matSort>
 
 					<!-- Checkbox Column -->
-					<ng-container matColumnDef="select">
+					<!-- <ng-container matColumnDef="select">
 						<mat-header-cell *matHeaderCellDef class="mat-column-checkbox">
 							<mat-checkbox (change)="$event ? masterToggle() : null" [checked]="selection.hasValue() && isAllSelected()" [indeterminate]="selection.hasValue() && !isAllSelected()" [aria-label]="checkboxLabel()">
 							</mat-checkbox>
@@ -54,7 +52,7 @@
 							<mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(row) : null" [checked]="selection.isSelected(row)" [aria-label]="checkboxLabel(row)">
 							</mat-checkbox>
 						</mat-cell>
-					</ng-container>
+					</ng-container> -->
 
 					<!-- Position Column -->
 					<ng-container matColumnDef="id">
@@ -64,7 +62,7 @@
 
 					<!-- Position Column -->
 					<ng-container matColumnDef="pCatId">
-						<mat-header-cell *matHeaderCellDef class="mat-column-id"> pCatId. </mat-header-cell>
+						<mat-header-cell *matHeaderCellDef mat-sort-header class="mat-column-id"> pCatId. </mat-header-cell>
 						<mat-cell *matCellDef="let element" class="mat-column-id"> {{element.pCatId}} </mat-cell>
 					</ng-container>
 
@@ -83,7 +81,7 @@
 									<mat-icon>create</mat-icon>
 								</button>&nbsp;
 
-								<button mat-icon-button color="warn" matTooltip="Delete element" type="button" (click)="deleteelement(element)">
+								<button mat-icon-button color="warn" matTooltip="Delete element" type="button" (click)="RemoveCats(element)">
 									<mat-icon>delete</mat-icon>
 								</button>&nbsp;
 
@@ -92,7 +90,7 @@
 
 
 					<mat-header-row *matHeaderRowDef="displayedColumns;sticky: true"></mat-header-row>
-					<mat-row *matRowDef="let row; columns: displayedColumns;" (click)="selection.toggle(row)">></mat-row>
+					<mat-row *matRowDef="let row; columns: displayedColumns;">></mat-row>
 				</mat-table>
 
 				<mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>

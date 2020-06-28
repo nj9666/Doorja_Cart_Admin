@@ -1,3 +1,4 @@
+<form class="w-100" [formGroup]="CouponForm" (submit)="CouponForm.valid && AddCoup()">
 <h1 mat-dialog-title>{{data.dialogtext}} Coupon</h1>
 <div mat-dialog-content>
 
@@ -6,13 +7,13 @@
 			<div class="col-md-4">
 				<mat-form-field class="example-full-width">
 					<mat-label>Coupon Code</mat-label>
-					<input matInput [(ngModel)]="data.obj.coupCode">
+					<input matInput formControlName="coupCode">
 				</mat-form-field>
 			</div>
 			<div class="col-md-4">
 				<mat-form-field class="example-full-width">
 					<mat-label>Name</mat-label>
-					<input matInput [(ngModel)]="data.obj.name">
+					<input matInput formControlName="name">
 				</mat-form-field>
 			</div>
 		</div>
@@ -20,7 +21,7 @@
             <div class="col-md-4">
 
 				<label id="Discount">Pick your Discount Type</label>
-				<mat-radio-group aria-labelledby="Discount" class="example-radio-group" style="flex-direction: row;" [(ngModel)]="data.obj.discountType">
+				<mat-radio-group aria-labelledby="Discount" class="example-radio-group" style="flex-direction: row;" formControlName="discountType">
 					<mat-radio-button class="example-radio-button" [value]="1">
 						Flat
 					</mat-radio-button>
@@ -35,13 +36,13 @@
 			<div class="col-md-4">
 				<mat-form-field class="example-full-width">
 					<mat-label>Discount Amount</mat-label>
-					<input matInput [(ngModel)]="data.obj.discountAmount">
+					<input matInput formControlName="discountAmount">
 				</mat-form-field>
             </div>
 			<div class="col-md-4">
 				<mat-form-field class="example-full-width">
 					<mat-label>Start Date</mat-label>
-					<input matInput [min]="data.minDate" [matDatepicker]="dp3" disabled [(ngModel)]="data.obj.startDate">
+					<input matInput [min]="data.minDate" [matDatepicker]="dp3" disabled formControlName="startDate">
 					<mat-datepicker-toggle matSuffix [for]="dp3"></mat-datepicker-toggle>
 					<mat-datepicker #dp3 disabled="false"></mat-datepicker>
 				</mat-form-field>
@@ -49,7 +50,7 @@
 			<div class="col-md-4">
 				<mat-form-field class="example-full-width">
 					<mat-label>End Date</mat-label>
-					<input matInput [min]="data.minDate" [matDatepicker]="dp4" disabled [(ngModel)]="data.obj.endDate">
+					<input matInput [min]="data.minDate" [matDatepicker]="dp4" disabled formControlName="endDate">
 					<mat-datepicker-toggle matSuffix [for]="dp4"></mat-datepicker-toggle>
 					<mat-datepicker #dp4 disabled="false"></mat-datepicker>
 				</mat-form-field>
@@ -60,13 +61,14 @@
 			<div class="col-md-8">
 				<mat-form-field class="example-full-width">
 					<mat-label>Description</mat-label>
-					<textarea matInput [(ngModel)]="data.obj.description"></textarea>
+					<textarea matInput formControlName="description"></textarea>
 				</mat-form-field>
 			</div>
 		</div>
 	</div>
 </div>
 <div mat-dialog-actions>
-	<button mat-button (click)="onNoClick()">No Thanks</button>
-	<button mat-button [mat-dialog-close]="data" cdkFocusInitial>Ok</button>
+	<button mat-button type="button" (click)="onNoClick()">No Thanks</button>
+	<button mat-button type="submit">{{data.id == -1 ?'Add':'Update'}}</button>
 </div>
+</form>

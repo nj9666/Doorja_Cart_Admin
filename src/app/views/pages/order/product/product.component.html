@@ -29,7 +29,7 @@
 						<mat-header-cell *matHeaderCellDef > Product Pic </mat-header-cell>
 						<mat-cell *matCellDef="let element"> 
 							<div class="propic p-2">
-								<img src="{{element.pic}}" alt="">
+								<img src="{{this.service.BaseUrlPic}}{{element.pic}}" alt="">
 							</div>
 							{{element.Pic}}
 						 </mat-cell>

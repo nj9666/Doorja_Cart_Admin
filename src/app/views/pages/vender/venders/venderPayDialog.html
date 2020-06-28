@@ -1,50 +1,43 @@
-<h1 mat-dialog-title>Payable Amount is ${{data.obj.paymantAmount}}</h1>
-<div mat-dialog-content>
-
-    <div class="kt-section">
-        
-        <div class="kt-section__content kt-section__content--solid">
-            <div class="row">
-                <div class="col">
-                    <h4><span class="text-success">{{data.obj.displayBusinessName}}'s</span> Bank Details</h4>
-                    <div class="kt-divider">
-                        <span></span>
-                        <span>-</span>
-                        <span></span>
-                    </div>
-                    <h5>Account holder name : <span class="text-primary">{{data.obj.accountHolderName}}</span></h5>
-                    <h5>Account number : <span class="text-primary">{{data.obj.accountNumber}}</span></h5>
-                    <h5>Bank name : <span class="text-primary">{{data.obj.bankName}}</span></h5>
-                    <h5>Bank branch : <span class="text-primary">{{data.obj.branch}}</span></h5>
-                    <h5>IFSC code : <span class="text-primary">{{data.obj.ifscCode}}</span></h5>
-                </div>
-            </div>
-            <div class="kt-space-10"></div>
-            <div class="kt-divider">
-                <span></span>
-                <span>-</span>
-                <span></span>
-            </div>
-            <div class="kt-space-10"></div>
-            <div class="row">
-                <!-- <div class="col-md-6">
-                    <mat-form-field>
-                        <mat-label>Bank Account Number</mat-label>
-                        <input matInput [(ngModel)]="data.BankAccount" cdkFocusInitial>
-                      </mat-form-field>
-                </div> -->
-                <div class="col-md-12">
-                    <mat-form-field class="example-full-width">
-                        <mat-label>Transaction Id</mat-label>
-                        <input matInput [(ngModel)]="data.transid" cdkFocusInitial>
-                      </mat-form-field>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<div mat-dialog-actions>
-  <button mat-button (click)="onNoClick()">No Thanks</button>
-  <button mat-button [mat-dialog-close]="data" >Pay</button>
-</div>
-
+<form class="w-100" [formGroup]="PayForm" (submit)="PayForm.valid && AddPays(data.obj)">
+	<h1 mat-dialog-title>Payable Amount is ${{data.obj.paymantAmount}}</h1>
+	<div mat-dialog-content>
+		<div class="kt-section">
+			<div class="kt-section__content kt-section__content--solid">
+				<div class="row">
+					<div class="col">
+						<h4><span class="text-success">{{data.obj.displayBusinessName}}'s</span> Bank Details</h4>
+						<div class="kt-divider">
+							<span></span>
+							<span>-</span>
+							<span></span>
+						</div>
+						<h5>Account holder name : <span class="text-primary">{{data.obj.accountHolderName}}</span></h5>
+						<h5>Account number : <span class="text-primary">{{data.obj.accountNumber}}</span></h5>
+						<h5>Bank name : <span class="text-primary">{{data.obj.bankName}}</span></h5>
+						<h5>Bank branch : <span class="text-primary">{{data.obj.branch}}</span></h5>
+						<h5>IFSC code : <span class="text-primary">{{data.obj.ifscCode}}</span></h5>
+					</div>
+				</div>
+				<div class="kt-space-10"></div>
+				<div class="kt-divider">
+					<span></span>
+					<span>-</span>
+					<span></span>
+				</div>
+				<div class="kt-space-10"></div>
+				<div class="row">
+					<div class="col-md-12">
+						<mat-form-field class="example-full-width">
+							<mat-label>Transaction Id</mat-label>
+							<input matInput formControlName="TraId" cdkFocusInitial>
+						</mat-form-field>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div mat-dialog-actions>
+		<button mat-button type="button" (click)="onNoClick()">No Thanks</button>
+		<button mat-button type="submit">Pay</button>
+	</div>
+</form>
