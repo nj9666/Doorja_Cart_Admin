@@ -1,5 +1,5 @@
 import { Injectable, EventEmitter } from '@angular/core';
-import { Alert, AlertType, KeyValue, Account_Model, KeyValueString, ResponseModel  } from '../Shared/CommonModel';
+import { Alert, AlertType, KeyValue, Account_Model, KeyValueString, ResponseModel } from '../Shared/CommonModel';
 import { Router, NavigationStart } from '@angular/router';
 import * as moment from 'moment';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -20,7 +20,7 @@ export class SystemService {
 
     public BaseUrlPic = 'https://localhost:44336/public/subproduct/';
 
-    disp_timeline : any;
+    disp_timeline: any;
     HOST: string;
     //public AuthHub: SignalR.Hub.Proxy; 
     public App: AppHelper; rootUrl = window["Site_URL"];
@@ -28,16 +28,16 @@ export class SystemService {
     public Data: DataHelper;
     public MemberPortal_Common_Data: any;
     public NoticeModel: any;
-    public SideManuShow: boolean=true;
+    public SideManuShow: boolean = true;
     public Account: Account_Model;
-    
+
 
     public _dataPromise: Deferred<boolean> = new Deferred<boolean>();
     public get HasAccountData(): Promise<boolean> {
-        if(localStorage.getItem("UserDto")){
+        if (localStorage.getItem("UserDto")) {
             if ((localStorage.getItem("UserDto")) && JSON.parse(localStorage.getItem("UserDto")).CustomerID > 0) {
                 this._dataPromise.resolve(true);
-             }
+            }
         }
         return this._dataPromise.promise;
     }
@@ -47,11 +47,11 @@ export class SystemService {
     public keepAfterRouteChange = false;
     //End Alert Service
 
-    constructor(public router: Router,public location: Location, public http: HttpClient) {
+    constructor(public router: Router, public location: Location, public http: HttpClient) {
         this.MemberPortal_Common_Data = {};
         this.Account = <Account_Model>{};
         this.App = new AppHelper();
-        this.Data = new DataHelper(http, this.App);
+        this.Data = new DataHelper(router, http, this.App);
         //if (this.App.getCookie("BearerToken")) {
         //    this.loadAccountDetail();
         //}
@@ -94,10 +94,10 @@ export class SystemService {
         window.setTimeout(() => {
             if (this.App.getCookie("ApiToken")) {
                 let UserData = JSON.parse(localStorage.getItem("UserDto"));
-                if(localStorage.getItem("UserDto")){
+                if (localStorage.getItem("UserDto")) {
                     this.Account = UserData;
                 }
-                
+
                 console.log(this.Account);
                 this._dataPromise.resolve(true);
             }
@@ -118,14 +118,14 @@ export class SystemService {
         //this.Data.startConnection();
         this.resetPromise();
         this.App.setCookie("ApiToken", "", 0);
-        this.Account = <Account_Model>{ UserID: 0};
+        this.Account = <Account_Model>{ UserID: 0 };
         this.Data.App.Clear_Local_Storage();
         this.redirectToLogin();
     }
     ClearToken() {
         this.App.setCookie("ApiToken", "", 0);
-        this.Account = <Account_Model>{ UserID: 0};
-        
+        this.Account = <Account_Model>{ UserID: 0 };
+
     }
 
     resetPromise() {
@@ -159,7 +159,7 @@ export class SystemService {
 
     InItMaterialCss() {
         //window["gapi"].
-        
+
     }
 
 }
@@ -170,7 +170,7 @@ class DataHelper {
     public defered = new Deferred<boolean>();
     public objDefered: any = {};
 
-    constructor(public http: HttpClient, public App: AppHelper) {
+    constructor(public router: Router, public http: HttpClient, public App: AppHelper) {
     }
 
     ExecuteAction<T>(...args: any[]): Promise<T> {
@@ -200,7 +200,18 @@ class DataHelper {
                 'Authorization': localStorage.getItem("ApiToken") == null ? "" : localStorage.getItem("ApiToken")
             })
         };
-        return this.http.get<ResponseModel<T>>(url,httpOptions).toPromise<ResponseModel<T>>();
+        let promise = this.http.get<ResponseModel<T>>(url, httpOptions).toPromise<ResponseModel<T>>();
+        promise.then((res) => {
+            if (!res.success) {
+                if (res.message == "Invalid auth token, please try login again.") {
+
+                    this.App.setCookie("BearerToken", "", 0);
+                    this.App.Clear_Local_Storage();
+                    this.router.navigate(['/login']);
+                }
+            }
+        });
+        return promise;
     }
 
     ExecuteAPIWithLoader_Get<T>(action: string): Promise<ResponseModel<T>> {
@@ -218,7 +229,19 @@ class DataHelper {
                 'Authorization': localStorage.getItem("ApiToken") == null ? "" : localStorage.getItem("ApiToken")
             })
         };
-        return this.http.post<ResponseModel<T>>(url, postData, httpOptions).toPromise<ResponseModel<T>>();
+        let promise = this.http.post<ResponseModel<T>>(url, postData, httpOptions).toPromise<ResponseModel<T>>();
+        promise.then((res) => {
+            if (!res.success) {
+                if (res.message == "Invalid auth token, please try login again.") {
+
+                    this.App.setCookie("BearerToken", "", 0);
+                    this.App.Clear_Local_Storage();
+                    this.router.navigate(['/login']);
+                }
+            }
+        });
+
+        return promise;
     }
 
     ExecuteAPIWithLoader<T>(action: string, postData: any): Promise<ResponseModel<T>> {
@@ -243,7 +266,7 @@ export class Deferred<T> {
 }
 
 class AppHelper {
-    public ShowLoader: boolean=true; public ShowFullLoader: boolean;
+    public ShowLoader: boolean = true; public ShowFullLoader: boolean;
     public RefreshData: EventEmitter<any> = new EventEmitter();
     public changeAnimation: EventEmitter<any> = new EventEmitter();
     public sortChange: EventEmitter<any> = new EventEmitter();

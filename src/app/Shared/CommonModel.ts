@@ -16,6 +16,7 @@ export class KeyValueString {
 
 export class ResponseModel<T>{
     status: boolean;
+    success: boolean;
     message: string;
     token: string;
     data: T;
@@ -55,5 +56,5 @@ export class GridFilter {
 
 export class Account_Model {
     UserID: number;
-    NoGaurd:boolean;
+    NoGaurd: boolean;
 }

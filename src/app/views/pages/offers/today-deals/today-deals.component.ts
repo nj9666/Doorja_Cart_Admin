@@ -1,9 +1,9 @@
 // Angular
-import { Component, OnInit,  ViewChild, Inject} from '@angular/core';
-import { MatSort,MatPaginator,MatTableDataSource} from '@angular/material';
-import {SelectionModel} from '@angular/cdk/collections';
-import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
-import {animate, state, style, transition, trigger} from '@angular/animations';
+import { Component, OnInit, ViewChild, Inject } from '@angular/core';
+import { MatSort, MatPaginator, MatTableDataSource } from '@angular/material';
+import { SelectionModel } from '@angular/cdk/collections';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { animate, state, style, transition, trigger } from '@angular/animations';
 
 import { SystemService } from '../../../../Shared/SystemService';
 import { formatDate, DatePipe } from '@angular/common';
@@ -15,35 +15,35 @@ import { formatDate, DatePipe } from '@angular/common';
   styleUrls: ['./today-deals.component.scss'],
   animations: [
     trigger('detailExpand', [
-      state('collapsed', style({height: '0px', minHeight: '0'})),
-      state('expanded', style({height: '*'})),
+      state('collapsed', style({ height: '0px', minHeight: '0' })),
+      state('expanded', style({ height: '*' })),
       transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
     ]),
   ],
 })
 export class TodayDealsComponent implements OnInit {
-  displayedColumns: string[] = ['select','vid','cat', 'sku', 'name','currentRating'];
+  displayedColumns: string[] = ['select', 'vid', 'cat', 'sku', 'name', 'currentRating'];
   dataSource_product = new MatTableDataSource<ProductLs>(ELEMENT_DATA_product);
   selection = new SelectionModel<ProductLs>(true, []);
-  @ViewChild('mat_pag_product', {read: MatPaginator, static: true}) paginator_product: MatPaginator;
-  @ViewChild('mattbl_product', {read: MatSort, static: true}) sort_product: MatSort;
+  @ViewChild('mat_pag_product', { read: MatPaginator, static: true }) paginator_product: MatPaginator;
+  @ViewChild('mattbl_product', { read: MatSort, static: true }) sort_product: MatSort;
 
-  
+
   displayedColumns_deal: string[] = ['discountType', 'discountAmount', 'startDate', 'action'];
   dataSource_deal = new MatTableDataSource<PeriodicElement_DEAL>(ELEMENT_DATA_DEAL);
-  @ViewChild('mat_pag_deal', {read: MatPaginator, static: true}) paginator_deal: MatPaginator;
-  @ViewChild('mattbl_deal', {read: MatSort, static: true}) sort_deal: MatSort;
+  @ViewChild('mat_pag_deal', { read: MatPaginator, static: true }) paginator_deal: MatPaginator;
+  @ViewChild('mattbl_deal', { read: MatSort, static: true }) sort_deal: MatSort;
 
-  oldDeal:any;
+  oldDeal: any;
 
 
   applyFilter_product(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource_product.filter = filterValue.trim().toLowerCase();
   }
-  constructor(public dialog: MatDialog,public service: SystemService,private datePipe: DatePipe) { }
-  
-  getselected(){
+  constructor(public dialog: MatDialog, public service: SystemService, private datePipe: DatePipe) { }
+
+  getselected() {
     console.log(this.selection.selected);
   }
   applyFilter_deal(event: Event) {
@@ -59,8 +59,8 @@ export class TodayDealsComponent implements OnInit {
   /** Selects all rows if they are not all selected; otherwise clear selection. */
   masterToggle() {
     this.isAllSelected() ?
-        this.selection.clear() :
-        this.dataSource_product.data.forEach(row => this.selection.select(row));
+      this.selection.clear() :
+      this.dataSource_product.data.forEach(row => this.selection.select(row));
   }
   /** The label for the checkbox on the passed row */
   checkboxLabel(row?: ProductLs): string {
@@ -73,41 +73,41 @@ export class TodayDealsComponent implements OnInit {
     console.log(this.selection.selected);
     const dialogRef = this.dialog.open(DealDialog, {
       width: '600px',
-      data: {dialogtext: "Add New", proList: this.selection.selected,minDate:new Date()}
+      data: { dialogtext: "Add New", proList: this.selection.selected, minDate: new Date() }
     });
 
     dialogRef.afterClosed().subscribe(result => {
       console.log('The dialog was closed');
       console.log("--------");
       console.log(result);
-      if(result && result.discountAmount > 0){
+      if (result && result.discountAmount > 0) {
         result.startDate = this.datePipe.transform(result.startDate),
-        this.InsertDeal(result);
+          this.InsertDeal(result);
       }
     });
   }
-  editelement(el){
+  editelement(el) {
     this.oldDeal = el;
     console.log(el);
     const dialogRef = this.dialog.open(DealDialog, {
       width: '700px',
       data: {
-        dialogtext: "Edit this", 
-        minDate:new Date(),
-        discountType:el.discountType,
-        discountAmount : el.discountAmount,
-        startDate : this.datePipe.transform(el.startDate),
+        dialogtext: "Edit this",
+        minDate: new Date(),
+        discountType: el.discountType,
+        discountAmount: el.discountAmount,
+        startDate: this.datePipe.transform(el.startDate),
       }
     });
 
     dialogRef.afterClosed().subscribe(result => {
       console.log('The dialog was closed');
       console.log(result);
-      if(result){
-        var obj ={
-          discountType : result.discountType,
-          discountAmount : result.discountAmount,
-          startDate : this.datePipe.transform(result.startDate),
+      if (result) {
+        var obj = {
+          discountType: result.discountType,
+          discountAmount: result.discountAmount,
+          startDate: this.datePipe.transform(result.startDate),
         }
         this.EditDeal(obj);
       }
@@ -121,20 +121,17 @@ export class TodayDealsComponent implements OnInit {
     this.loadProduct();
     this.loadDeal();
   }
-  InsertDeal(result){
+  InsertDeal(result) {
     var deal = {
       discountType: result.discountType,
       discountAmount: result.discountAmount,
       startDate: result.startDate,
-      proList:result.proList,
-    }; 
+      proList: result.proList,
+    };
     console.log(JSON.stringify(deal));
-
-    this.service.Data.ExecuteAPI<any>("Deal/Insert",deal).then((data:any) =>
-		{
+    this.service.Data.ExecuteAPI<any>("Deal/Insert", deal).then((data: any) => {
       console.log(data);
-      if (data.success)
-      {
+      if (data.success) {
         ELEMENT_DATA_DEAL.push(deal);
         this.dataSource_deal = new MatTableDataSource<PeriodicElement_DEAL>(ELEMENT_DATA_DEAL);
         this.dataSource_deal.paginator = this.paginator_deal;
@@ -143,50 +140,42 @@ export class TodayDealsComponent implements OnInit {
       }
     });
   }
-  loadProduct(){
-    this.service.Data.ExecuteAPI_Get<any>("Product/GetAll/Fordeal").then((data:any) =>
-		{
+  loadProduct() {
+    this.service.Data.ExecuteAPI_Get<any>("Product/GetAll/Fordeal").then((data: any) => {
       this.dataSource_product = new MatTableDataSource<any>([]);
-      if (data.success)
-      {
+      if (data.success) {
         ELEMENT_DATA_product.length = 0;
         data.data.forEach(element => { ELEMENT_DATA_product.push(element); });
         this.dataSource_product = new MatTableDataSource<ProductLs>(ELEMENT_DATA_product);
         this.dataSource_product.paginator = this.paginator_product;
         this.dataSource_product.sort = this.sort_product;
       }
-		});
+    });
   }
-  loadDeal(){
-    this.service.Data.ExecuteAPI_Get<any>("Deal/GetAll").then((data:any) =>
-		{
+  loadDeal() {
+    this.service.Data.ExecuteAPI_Get<any>("Deal/GetAll").then((data: any) => {
       this.dataSource_deal = new MatTableDataSource<any>([]);
-      if (data.success)
-      {
+      if (data.success) {
         ELEMENT_DATA_DEAL.length = 0;
         data.data.forEach(element => { ELEMENT_DATA_DEAL.push(element); });
         this.dataSource_deal = new MatTableDataSource<PeriodicElement_DEAL>(ELEMENT_DATA_DEAL);
         this.dataSource_deal.paginator = this.paginator_deal;
         this.dataSource_deal.sort = this.sort_deal;
       }
-		});
+    });
   }
-  EditDeal(obj){
+  EditDeal(obj) {
     var sendobj = []
     sendobj.push(this.oldDeal)
     sendobj.push(obj)
     console.log(this.oldDeal);
     console.log(obj);
-    this.service.Data.ExecuteAPI<any>("Deal/Edit/",sendobj).then((data:any) =>
-    {
-      if (data.success)
-      {
+    this.service.Data.ExecuteAPI<any>("Deal/Edit/", sendobj).then((data: any) => {
+      if (data.success) {
         console.log(data);
-        this.service.Data.ExecuteAPI_Get<any>("Deal/GetAll").then((data:any) =>
-        {
+        this.service.Data.ExecuteAPI_Get<any>("Deal/GetAll").then((data: any) => {
           this.dataSource_deal = new MatTableDataSource<any>([]);
-          if (data.success)
-          {
+          if (data.success) {
             ELEMENT_DATA_DEAL.length = 0;
             data.data.forEach(element => { ELEMENT_DATA_DEAL.push(element); });
             this.dataSource_deal = new MatTableDataSource<PeriodicElement_DEAL>(ELEMENT_DATA_DEAL);
@@ -197,17 +186,15 @@ export class TodayDealsComponent implements OnInit {
       }
     });
   }
-  RemoveDeal(obj){
-    this.service.Data.ExecuteAPI<any>("Deal/Remove/",obj).then((data:any) =>
-		{
-      if (data.success)
-      {
-       console.log(data);
-       const index: number = ELEMENT_DATA_DEAL.indexOf(ELEMENT_DATA_DEAL.find(x => x.discountType === obj.discountType && x.discountAmount == obj.discountAmount && x.startDate == obj.startDate));
-      if (index !== -1) {
-        ELEMENT_DATA_DEAL.splice(index, 1);
-      } 
-      this.dataSource_deal = new MatTableDataSource<PeriodicElement_DEAL>(ELEMENT_DATA_DEAL);
+  RemoveDeal(obj) {
+    this.service.Data.ExecuteAPI<any>("Deal/Remove/", obj).then((data: any) => {
+      if (data.success) {
+        console.log(data);
+        const index: number = ELEMENT_DATA_DEAL.indexOf(ELEMENT_DATA_DEAL.find(x => x.discountType === obj.discountType && x.discountAmount == obj.discountAmount && x.startDate == obj.startDate));
+        if (index !== -1) {
+          ELEMENT_DATA_DEAL.splice(index, 1);
+        }
+        this.dataSource_deal = new MatTableDataSource<PeriodicElement_DEAL>(ELEMENT_DATA_DEAL);
         this.dataSource_deal.paginator = this.paginator_deal;
         this.dataSource_deal.sort = this.sort_deal;
       }
@@ -218,17 +205,17 @@ export class TodayDealsComponent implements OnInit {
 @Component({
   selector: 'newDealDialog',
   templateUrl: 'newDealDialog.html',
-  styleUrls:['newDealDialog.scss']
+  styleUrls: ['newDealDialog.scss']
 })
-export class  DealDialog {
+export class DealDialog {
   constructor(
     public dialogRef: MatDialogRef<DealDialog>,
-    @Inject(MAT_DIALOG_DATA) public data: any) {}
+    @Inject(MAT_DIALOG_DATA) public data: any) { }
 
   onNoClick(): void {
     this.dialogRef.close();
   }
-  remToSelection(el){
+  remToSelection(el) {
     console.log(this.dialogRef);
     console.log(el);
     var proList = this.dialogRef.componentInstance.data.proList;
@@ -236,7 +223,7 @@ export class  DealDialog {
     if (index !== -1) {
       proList.splice(index, 1);
     }
-    console.log(this.dialogRef.componentInstance.data.proList); 
+    console.log(this.dialogRef.componentInstance.data.proList);
   }
 
 }
@@ -245,11 +232,11 @@ export class  DealDialog {
 export interface ProductLs {
   id: number;
   vid: number;
-  sku:string;
+  sku: string;
   name: string;
-  currentRating:number;
-  ratingCount:number;
-  cat:string;
+  currentRating: number;
+  ratingCount: number;
+  cat: string;
 }
 
 const ELEMENT_DATA_product: ProductLs[] = [];
@@ -259,7 +246,7 @@ export interface PeriodicElement_DEAL {
   discountType: number;
   discountAmount: number;
   startDate: Date;
-  proList:ProductLs[];
+  proList: ProductLs[];
 }
 
 const ELEMENT_DATA_DEAL: PeriodicElement_DEAL[] = [];
